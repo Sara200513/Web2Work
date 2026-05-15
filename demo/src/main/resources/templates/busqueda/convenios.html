@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Filtrar convenios</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/alumnos}">Alumnos</a></li>
+                <li><a th:href="@{/convenios}">Convenios FE</a></li>
+                <li class="activo"><a th:href="@{/busqueda}">Búsqueda</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Filtrar convenios</h1>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="tabla-contenedor">
+                <h2>Filtros</h2>
+                <div class="info-empresa">
+                    <form th:action="@{/busqueda/convenios}" method="get">
+                        <div class="fila-dos-columnas">
+                            <div class="form-grupo">
+                                <label>BÚSQUEDA</label>
+                                <input type="text" name="texto"
+                                       th:value="${texto}"
+                                       placeholder="Título o empresa...">
+                            </div>
+                            <div class="form-grupo">
+                                <label>ESTADO</label>
+                                <select name="estado">
+                                    <option value="">Todos los estados</option>
+                                    <option value="pendiente"
+                                            th:selected="${estado == 'pendiente'}">
+                                        Pendiente
+                                    </option>
+                                    <option value="activo"
+                                            th:selected="${estado == 'activo'}">
+                                        Activo
+                                    </option>
+                                    <option value="finalizado"
+                                            th:selected="${estado == 'finalizado'}">
+                                        Finalizado
+                                    </option>
+                                    <option value="cancelado"
+                                            th:selected="${estado == 'cancelado'}">
+                                        Cancelado
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-grupo">
+                            <label>EMPRESA</label>
+                            <select name="empresaId">
+                                <option value="">Todas las empresas</option>
+                                <option th:each="empresa : ${empresas}"
+                                        th:value="${empresa.id}"
+                                        th:text="${empresa.nombreEmpresa}"
+                                        th:selected="${empresaId == empresa.id}">
+                                    Empresa
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-acciones">
+                            <button type="submit" class="btn-primario">Filtrar</button>
+                            <a th:href="@{/busqueda/convenios}"
+                               class="btn-secundario">Limpiar filtros</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="tabla-contenedor">
+                <h2>Resultados</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Empresa</th>
+                            <th>Título</th>
+                            <th>Estado</th>
+                            <th>Fecha inicio</th>
+                            <th>Fecha fin</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="convenio : ${convenios}">
+                            <td th:text="${convenio.empresa.nombreEmpresa}">Empresa</td>
+                            <td th:text="${convenio.titulo}">Título</td>
+                            <td>
+                                <span th:class="'badge badge-' + ${convenio.estado}"
+                                      th:text="${convenio.estado}">Estado</span>
+                            </td>
+                            <td th:text="${convenio.fechaInicio}">Fecha</td>
+                            <td th:text="${convenio.fechaFin}">Fecha</td>
+                            <td>
+                                <a th:href="@{/convenios/{id}(id=${convenio.id})}"
+                                   class="btn-teal btn-pequeño">Ver</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${convenios == null or #lists.isEmpty(convenios)}">
+                            <td colspan="6" class="sin-datos">
+                                No se encontraron convenios.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

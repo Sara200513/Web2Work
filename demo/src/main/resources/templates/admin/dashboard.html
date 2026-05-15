@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Panel Administrador</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="activo"><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+                <li><a th:href="@{/admin/roles}">Roles</a></li>
+                <li><a th:href="@{/admin/config}">Config. sistema</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/admin/informes}">Informes</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Estado global del sistema</h1>
+            <div class="usuario-info">
+                <span>Admin</span>
+            </div>
+        </div>
+
+        <div class="contenido-inner">
+
+            <!-- TARJETAS RESUMEN -->
+            <div class="tarjetas-resumen">
+                <div class="tarjeta">
+                    <h3>Usuarios registrados</h3>
+                    <p class="numero" th:text="${totalUsuarios} ?: '0'">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Convenios activos</h3>
+                    <p class="numero" th:text="${totalConvenios} ?: '0'">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Alumnos en prácticas</h3>
+                    <p class="numero" th:text="${alumnosEnPracticas} ?: '0'">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Notif. enviadas hoy</h3>
+                    <p class="numero" th:text="${notificacionesHoy} ?: '0'">0</p>
+                </div>
+            </div>
+
+            <!-- GESTIÓN DE USUARIOS -->
+            <div class="tabla-contenedor">
+                <h2>Gestión de usuarios</h2>
+                <div class="tabla-acciones">
+                    <input type="text" id="buscadorUsuarios" placeholder="Buscar usuario..."
+                           onkeyup="filtrarTabla()" class="input-busqueda">
+                    <select id="filtroRol" onchange="filtrarTabla()" class="select-filtro">
+                        <option value="">Filtrar por rol</option>
+                        <option value="alumno">Alumno</option>
+                        <option value="profesor">Profesor</option>
+                        <option value="empresa">Empresa</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                    <a th:href="@{/admin/usuarios/nuevo}" class="btn-primario">+ Nuevo usuario</a>
+                </div>
+                <table id="tablaUsuarios">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="usuario : ${usuarios}">
+                            <td th:text="${usuario.nombre + ' ' + usuario.apellidos}">Nombre</td>
+                            <td th:text="${usuario.email}">correo@ejemplo.com</td>
+                            <td th:text="${usuario.rol}">Rol</td>
+                            <td>
+                                <span th:class="${usuario.cuentaActiva} ? 'badge badge-activo' : 'badge badge-inactivo'"
+                                      th:text="${usuario.cuentaActiva} ? 'Activo' : 'Inactivo'">Estado</span>
+                            </td>
+                            <td>
+                                <a th:href="@{/admin/usuarios/editar/{id}(id=${usuario.id})}"
+                                   class="btn-teal btn-pequeño">Editar</a>
+                                <a th:href="@{/admin/usuarios/eliminar/{id}(id=${usuario.id})}"
+                                   class="btn-secundario btn-pequeño"
+                                   onclick="return confirm('¿Estás seguro?')">Desactivar</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(usuarios)}">
+                            <td colspan="5" class="sin-datos">No hay usuarios registrados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

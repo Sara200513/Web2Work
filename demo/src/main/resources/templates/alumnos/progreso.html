@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Mi progreso</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/actividades/nueva}">Mis prácticas</a></li>
+                <li class="activo"><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Mi progreso</h1>
+            <div class="usuario-info"><span>Alumno</span></div>
+        </div>
+
+        <div class="contenido-inner">
+
+            <!-- PROGRESO HORAS -->
+            <div class="tabla-contenedor">
+                <h2>Horas completadas</h2>
+                <div class="progreso-contenedor">
+                    <div class="progreso-barra">
+                        <div class="progreso-relleno" style="width: 0%"></div>
+                    </div>
+                    <p class="progreso-porcentaje">0%</p>
+                </div>
+            </div>
+
+            <!-- ACTIVIDADES -->
+            <div class="tabla-contenedor">
+                <h2>Historial de actividades</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Título</th>
+                            <th>Horas</th>
+                            <th>Categoría</th>
+                            <th>Evidencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="actividad : ${actividades}">
+                            <td th:text="${actividad.fecha}">Fecha</td>
+                            <td th:text="${actividad.titulo}">Título</td>
+                            <td th:text="${actividad.horas}">0</td>
+                            <td th:text="${actividad.categoria}">Categoría</td>
+                            <td>
+                                <span class="badge badge-activo">Sí</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(actividades)}">
+                            <td colspan="5" class="sin-datos">No hay actividades registradas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- EVALUACIONES -->
+            <div class="tabla-contenedor">
+                <h2>Evaluaciones recibidas</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Nota</th>
+                            <th>Comentarios</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="evaluacion : ${evaluaciones}">
+                            <td th:text="${evaluacion.createdAt}">Fecha</td>
+                            <td th:text="${evaluacion.tipo}">Tipo</td>
+                            <td th:text="${evaluacion.notaFinal}">0</td>
+                            <td th:text="${evaluacion.comentarios}">Comentarios</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(evaluaciones)}">
+                            <td colspan="4" class="sin-datos">No hay evaluaciones recibidas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

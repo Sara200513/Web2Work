@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Detalle actividad</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
+                <li class="activo"><a th:href="@{/actividades}">Mis prácticas</a></li>
+                <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1 th:text="${actividad.titulo}">Detalle actividad</h1>
+            <div class="usuario-info"><span>Alumno</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="tabla-contenedor">
+                <h2>Información de la actividad</h2>
+                <div class="info-empresa">
+                    <p><strong>Fecha: </strong><span th:text="${actividad.fecha}"></span></p>
+                    <p><strong>Título: </strong><span th:text="${actividad.titulo}"></span></p>
+                    <p><strong>Descripción: </strong><span th:text="${actividad.descripcion}"></span></p>
+                    <p><strong>Horas: </strong><span th:text="${actividad.horas}"></span></p>
+                    <p><strong>Categoría: </strong><span th:text="${actividad.categoria}"></span></p>
+                </div>
+                <div class="form-acciones" style="padding: 16px;">
+                    <a th:href="@{/actividades/editar/{id}(id=${actividad.id})}"
+                       class="btn-primario">Editar</a>
+                    <a th:href="@{/actividades}" class="btn-secundario">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

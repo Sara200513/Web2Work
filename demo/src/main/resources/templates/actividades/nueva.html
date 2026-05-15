@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Mis prácticas</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
+                <li class="activo"><a th:href="@{/actividades/nueva}">Mis prácticas</a></li>
+                <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Mis prácticas</h1>
+            <div class="usuario-info"><span>Alumno</span></div>
+        </div>
+
+        <div class="contenido-inner">
+
+            <!-- INFO CONVENIO -->
+            <div class="alerta alerta-info">
+                INFO DEL CONVENIO — Empresa · Tutor · Fechas · Horas totales
+            </div>
+
+            <div class="fila-dos-columnas">
+
+                <!-- REGISTRAR ACTIVIDAD -->
+                <div class="tabla-contenedor">
+                    <h2>Registrar actividad</h2>
+                    <div class="info-empresa">
+                        <form th:action="@{/actividades/nueva}" method="post">
+                            <div class="form-grupo">
+                                <label>FECHA *</label>
+                                <input type="date" name="fecha" required>
+                            </div>
+                            <div class="form-grupo">
+                                <label>TÍTULO DE LA ACTIVIDAD *</label>
+                                <input type="text" name="titulo"
+                                       placeholder="Título de la actividad" required>
+                            </div>
+                            <div class="form-grupo">
+                                <label>DESCRIPCIÓN *</label>
+                                <textarea name="descripcion"
+                                          placeholder="Describe la actividad realizada..." required></textarea>
+                            </div>
+                            <div class="fila-dos-columnas">
+                                <div class="form-grupo">
+                                    <label>HORAS *</label>
+                                    <input type="number" name="horas" min="1" max="12"
+                                           placeholder="0" required>
+                                </div>
+                                <div class="form-grupo">
+                                    <label>CATEGORÍA *</label>
+                                    <select name="categoria" required>
+                                        <option value="">Seleccionar...</option>
+                                        <option value="desarrollo">Desarrollo</option>
+                                        <option value="diseño">Diseño</option>
+                                        <option value="testing">Testing</option>
+                                        <option value="documentacion">Documentación</option>
+                                        <option value="reuniones">Reuniones</option>
+                                        <option value="otros">Otros</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-acciones">
+                                <button type="submit" class="btn-primario">Guardar</button>
+                                <a th:href="@{/alumnos/dashboard}" class="btn-secundario">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- SUBIR EVIDENCIA -->
+                <div class="tabla-contenedor">
+                    <h2>Subir evidencia</h2>
+                    <div class="info-empresa">
+                        <form th:action="@{/evidencias/nueva}" method="post"
+                              enctype="multipart/form-data">
+                            <div class="form-grupo">
+                                <label>ACTIVIDAD ASOCIADA *</label>
+                                <select name="actividadId" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option th:each="actividad : ${actividades}"
+                                            th:value="${actividad.id}"
+                                            th:text="${actividad.titulo}">Actividad</option>
+                                </select>
+                            </div>
+                            <div class="form-grupo">
+                                <label>DESCRIPCIÓN</label>
+                                <textarea name="descripcion"
+                                          placeholder="Descripción del archivo..."></textarea>
+                            </div>
+                            <div class="form-grupo">
+                                <label>ARCHIVO *</label>
+                                <div class="zona-subida">
+                                    <p>Arrastra y suelta el archivo aquí o haz clic para seleccionarlo</p>
+                                    <input type="file" name="archivo"
+                                           accept=".pdf,.docx,.xlsx,.jpg,.png,.zip" required>
+                                    <p class="texto-ayuda">PDF, DOCX, XLSX, JPG, PNG, ZIP · Máx. 10MB</p>
+                                </div>
+                            </div>
+                            <div class="form-acciones">
+                                <button type="submit" class="btn-teal">Subir archivo</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

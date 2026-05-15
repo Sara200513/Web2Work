@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Evaluaciones</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+                <li><a th:href="@{/admin/roles}">Roles</a></li>
+                <li><a th:href="@{/admin/config}">Config. sistema</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li class="activo"><a th:href="@{/admin/informes}">Informes</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Evaluaciones emitidas</h1>
+            <div class="usuario-info"><span>Admin</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="tabla-contenedor">
+                <h2>Filtrar</h2>
+                <div class="info-empresa">
+                    <form th:action="@{/admin/informes/evaluaciones}" method="get">
+                        <div class="fila-dos-columnas">
+                            <div class="form-grupo">
+                                <label>TIPO DE EVALUACIÓN</label>
+                                <select name="tipo">
+                                    <option value="">Todas</option>
+                                    <option value="intermedio"
+                                            th:selected="${tipo == 'intermedio'}">
+                                        Intermedia
+                                    </option>
+                                    <option value="final"
+                                            th:selected="${tipo == 'final'}">
+                                        Final
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-acciones">
+                            <button type="submit" class="btn-primario">Filtrar</button>
+                            <a th:href="@{/admin/informes}" class="btn-secundario">← Volver</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="tabla-contenedor">
+                <h2>Resultados</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Empresa</th>
+                            <th>Evaluador</th>
+                            <th>Tipo</th>
+                            <th>Nota</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="evaluacion : ${evaluaciones}">
+                            <td th:text="${evaluacion.asignacion.alumno.nombre
+                                         + ' ' + evaluacion.asignacion.alumno.apellidos}">
+                                Alumno
+                            </td>
+                            <td th:text="${evaluacion.asignacion.convenio
+                                         .empresa.nombreEmpresa}">Empresa</td>
+                            <td th:text="${evaluacion.evaluador.nombre
+                                         + ' ' + evaluacion.evaluador.apellidos}">
+                                Evaluador
+                            </td>
+                            <td th:text="${evaluacion.tipo}">Tipo</td>
+                            <td th:text="${evaluacion.notaFinal}">0</td>
+                            <td th:text="${evaluacion.createdAt}">Fecha</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(evaluaciones)}">
+                            <td colspan="6" class="sin-datos">
+                                No hay evaluaciones registradas.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

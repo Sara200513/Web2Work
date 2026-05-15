@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Evaluaciones</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/profesores/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/convenios}">Convenios FE</a></li>
+                <li><a th:href="@{/alumnos}">Alumnos</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Evaluaciones</h1>
+            <div class="usuario-info"><span>Profesor</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="tabla-contenedor">
+                <h2>Listado de evaluaciones</h2>
+                <div class="tabla-acciones">
+                    <a th:href="@{/evaluaciones/nueva}" class="btn-primario">+ Nueva evaluación</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Empresa</th>
+                            <th>Tipo</th>
+                            <th>Nota</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="evaluacion : ${evaluaciones}">
+                            <td th:text="${evaluacion.asignacion.alumno.nombre + ' ' +
+                                         evaluacion.asignacion.alumno.apellidos}">Alumno</td>
+                            <td th:text="${evaluacion.asignacion.convenio.empresa.nombreEmpresa}">Empresa</td>
+                            <td th:text="${evaluacion.tipo}">Tipo</td>
+                            <td th:text="${evaluacion.notaFinal}">0</td>
+                            <td th:text="${evaluacion.createdAt}">Fecha</td>
+                            <td>
+                                <a th:href="@{/evaluaciones/{id}(id=${evaluacion.id})}"
+                                   class="btn-teal btn-pequeño">Ver</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(evaluaciones)}">
+                            <td colspan="6" class="sin-datos">No hay evaluaciones registradas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

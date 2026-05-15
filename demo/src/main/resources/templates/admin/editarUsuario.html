@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Editar usuario</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li class="activo"><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+                <li><a th:href="@{/admin/roles}">Roles</a></li>
+                <li><a th:href="@{/admin/config}">Config. sistema</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/admin/informes}">Informes</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Editar usuario</h1>
+            <div class="usuario-info"><span>Admin</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="formulario">
+                <h2>Datos del usuario</h2>
+                <form th:action="@{/admin/usuarios/editar/{id}(id=${usuario.id})}" method="post">
+                    <div class="form-grupo">
+                        <label>NOMBRE *</label>
+                        <input type="text" name="nombre"
+                               th:value="${usuario.nombre}" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>APELLIDOS *</label>
+                        <input type="text" name="apellidos"
+                               th:value="${usuario.apellidos}" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>DNI *</label>
+                        <input type="text" name="dni"
+                               th:value="${usuario.dni}" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>CORREO ELECTRÓNICO *</label>
+                        <input type="email" name="email"
+                               th:value="${usuario.email}" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>TELÉFONO *</label>
+                        <input type="tel" name="telefono"
+                               th:value="${usuario.telefono}" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>ROL *</label>
+                        <select name="rol" required>
+                            <option value="alumno"
+                                    th:selected="${usuario.rol == 'alumno'}">Alumno</option>
+                            <option value="profesor"
+                                    th:selected="${usuario.rol == 'profesor'}">Profesor</option>
+                            <option value="empresa"
+                                    th:selected="${usuario.rol == 'empresa'}">Empresa</option>
+                            <option value="admin"
+                                    th:selected="${usuario.rol == 'admin'}">Administrador</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label>CUENTA ACTIVA</label>
+                        <select name="cuentaActiva">
+                            <option value="true"
+                                    th:selected="${usuario.cuentaActiva}">Activa</option>
+                            <option value="false"
+                                    th:selected="${!usuario.cuentaActiva}">Inactiva</option>
+                        </select>
+                    </div>
+                    <div class="form-acciones">
+                        <button type="submit" class="btn-primario">Guardar cambios</button>
+                        <a th:href="@{/admin/usuarios}" class="btn-secundario">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

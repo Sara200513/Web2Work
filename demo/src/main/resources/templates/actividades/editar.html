@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Editar actividad</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
+                <li class="activo"><a th:href="@{/actividades}">Mis prácticas</a></li>
+                <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Editar actividad</h1>
+            <div class="usuario-info"><span>Alumno</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="formulario">
+                <h2>Editar actividad</h2>
+                <form th:action="@{/actividades/editar/{id}(id=${actividad.id})}" method="post">
+                    <div class="form-grupo">
+                        <label>FECHA *</label>
+                        <input type="date" name="fecha" th:value="${actividad.fecha}" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>TÍTULO *</label>
+                        <input type="text" name="titulo" th:value="${actividad.titulo}" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>DESCRIPCIÓN *</label>
+                        <textarea name="descripcion" th:text="${actividad.descripcion}" required></textarea>
+                    </div>
+                    <div class="form-grupo">
+                        <label>HORAS *</label>
+                        <input type="number" name="horas" th:value="${actividad.horas}"
+                               min="1" max="12" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>CATEGORÍA *</label>
+                        <select name="categoria" required>
+                            <option value="desarrollo" th:selected="${actividad.categoria == 'desarrollo'}">Desarrollo</option>
+                            <option value="diseño" th:selected="${actividad.categoria == 'diseño'}">Diseño</option>
+                            <option value="testing" th:selected="${actividad.categoria == 'testing'}">Testing</option>
+                            <option value="documentacion" th:selected="${actividad.categoria == 'documentacion'}">Documentación</option>
+                            <option value="reuniones" th:selected="${actividad.categoria == 'reuniones'}">Reuniones</option>
+                            <option value="otros" th:selected="${actividad.categoria == 'otros'}">Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-acciones">
+                        <button type="submit" class="btn-primario">Guardar cambios</button>
+                        <a th:href="@{/actividades}" class="btn-secundario">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

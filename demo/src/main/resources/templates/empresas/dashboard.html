@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Dashboard Empresa</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="activo"><a th:href="@{/empresas/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/empresas/alumnos}">Alumnos</a></li>
+                <li><a th:href="@{/convenios}">Convenios</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Panel de empresa</h1>
+            <div class="usuario-info">
+                <span>Empresa</span>
+            </div>
+        </div>
+
+        <div class="contenido-inner">
+
+            <!-- TARJETAS RESUMEN -->
+            <div class="tarjetas-resumen">
+                <div class="tarjeta">
+                    <h3>Alumnos en prácticas</h3>
+                    <p class="numero" th:text="${totalAlumnos} ?: '0'">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Evaluaciones pend.</h3>
+                    <p class="numero" th:text="${evaluacionesPendientes} ?: '0'">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Actividades nuevas</h3>
+                    <p class="numero" th:text="${actividadesNuevas} ?: '0'">0</p>
+                </div>
+            </div>
+
+            <!-- TABLA ALUMNOS -->
+            <div class="tabla-contenedor">
+                <h2>Alumnos asignados</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Curso</th>
+                            <th>Horas</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="asignacion : ${asignaciones}">
+                            <td th:text="${asignacion.alumno.nombre + ' ' + asignacion.alumno.apellidos}">Alumno</td>
+                            <td th:text="${asignacion.alumno.curso}">Curso</td>
+                            <td th:text="${asignacion.horasRealizadas}">0</td>
+                            <td>
+                                <span th:class="'badge badge-' + ${asignacion.estadoAsignacion}"
+                                      th:text="${asignacion.estadoAsignacion}">Estado</span>
+                            </td>
+                            <td>
+                                <a th:href="@{/empresas/alumnos/{id}(id=${asignacion.alumno.id})}"
+                                   class="btn-teal btn-pequeño">Ver</a>
+                                <a th:href="@{/comentarios/nuevo}" class="btn-secundario btn-pequeño">Observación</a>
+                                <a th:href="@{/evaluaciones/nueva}" class="btn-primario btn-pequeño">Evaluar</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(asignaciones)}">
+                            <td colspan="5" class="sin-datos">No hay alumnos asignados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- CONVENIO ACTIVO -->
+            <div class="tabla-contenedor">
+                <h2>Convenio activo</h2>
+                <div class="info-convenio" th:if="${convenio != null}">
+                    <p><strong>Título: </strong><span th:text="${convenio.titulo}">Título</span></p>
+                    <p><strong>Fechas: </strong>
+                        <span th:text="${convenio.fechaInicio}">Inicio</span> -
+                        <span th:text="${convenio.fechaFin}">Fin</span>
+                    </p>
+                    <p><strong>Horas totales: </strong><span th:text="${convenio.horasTotales}">0</span></p>
+                    <a th:href="@{/convenios/{id}(id=${convenio.id})}" class="btn-secundario">Ver documentación</a>
+                </div>
+                <p th:if="${convenio == null}" class="sin-datos">No hay convenio activo.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

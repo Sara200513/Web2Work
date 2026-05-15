@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Mi perfil</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li class="activo"><a th:href="@{/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Mi perfil</h1>
+            <div class="usuario-info">
+                <span th:text="${usuario.nombre}">Usuario</span>
+            </div>
+        </div>
+
+        <div class="contenido-inner">
+            <div th:if="${mensajeExito}" class="alerta alerta-exito">
+                <span th:text="${mensajeExito}"></span>
+            </div>
+            <div th:if="${mensajeError}" class="alerta alerta-error">
+                <span th:text="${mensajeError}"></span>
+            </div>
+
+            <div class="fila-dos-columnas">
+
+                <!-- DATOS PERSONALES -->
+                <div class="tabla-contenedor">
+                    <h2>Datos personales</h2>
+                    <div class="info-empresa">
+                        <form th:action="@{/perfil}" method="post">
+                            <div class="form-grupo">
+                                <label>NOMBRE *</label>
+                                <input type="text" name="nombre"
+                                       th:value="${usuario.nombre}" required>
+                            </div>
+                            <div class="form-grupo">
+                                <label>APELLIDOS *</label>
+                                <input type="text" name="apellidos"
+                                       th:value="${usuario.apellidos}" required>
+                            </div>
+                            <div class="form-grupo">
+                                <label>DNI</label>
+                                <input type="text" th:value="${usuario.dni}" disabled>
+                            </div>
+                            <div class="form-grupo">
+                                <label>CORREO ELECTRÓNICO</label>
+                                <input type="email" th:value="${usuario.email}" disabled>
+                            </div>
+                            <div class="form-grupo">
+                                <label>TELÉFONO *</label>
+                                <input type="tel" name="telefono"
+                                       th:value="${usuario.telefono}" required>
+                            </div>
+                            <div class="form-acciones">
+                                <button type="submit" class="btn-primario">
+                                    Guardar cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- CAMBIAR CONTRASEÑA -->
+                <div class="tabla-contenedor">
+                    <h2>Cambiar contraseña</h2>
+                    <div class="info-empresa">
+                        <form th:action="@{/perfil}" method="post">
+                            <input type="hidden" name="nombre"
+                                   th:value="${usuario.nombre}">
+                            <input type="hidden" name="apellidos"
+                                   th:value="${usuario.apellidos}">
+                            <input type="hidden" name="telefono"
+                                   th:value="${usuario.telefono}">
+                            <div class="form-grupo">
+                                <label>CONTRASEÑA ACTUAL *</label>
+                                <input type="password" name="passwordActual"
+                                       placeholder="••••••••">
+                            </div>
+                            <div class="form-grupo">
+                                <label>NUEVA CONTRASEÑA *</label>
+                                <input type="password" name="passwordNueva"
+                                       placeholder="Mínimo 8 caracteres">
+                            </div>
+                            <div class="form-acciones">
+                                <button type="submit" class="btn-teal">
+                                    Cambiar contraseña
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

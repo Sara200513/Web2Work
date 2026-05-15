@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo} ?: 'Web2Work'">Web2Work</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img alt="Web2Work" src="/imagenes/Imagen1.jpeg">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li th:classappend="${seccion == 'dashboard'} ? 'activo'">
+                    <a th:href="@{/dashboard}">Dashboard</a>
+                </li>
+                <li th:classappend="${seccion == 'alumnos'} ? 'activo'">
+                    <a th:href="@{/alumnos}">Alumnos</a>
+                </li>
+                <li th:classappend="${seccion == 'convenios'} ? 'activo'">
+                    <a th:href="@{/convenios}">Convenios FE</a>
+                </li>
+                <li th:classappend="${seccion == 'mensajes'} ? 'activo'">
+                    <a th:href="@{/mensajes}">Mensajería</a>
+                </li>
+                <li th:classappend="${seccion == 'notificaciones'} ? 'activo'">
+                    <a th:href="@{/notificaciones}">Notificaciones</a>
+                </li>
+                <li th:classappend="${seccion == 'perfil'} ? 'activo'">
+                    <a th:href="@{/usuarios/perfil}">Mi perfil</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="contenido">
+        <!-- CABECERA -->
+        <div class="cabecera">
+            <h1 th:text="${titulo}">Título</h1>
+            <div class="usuario-info">
+                <span th:text="${usuarioActual}">Usuario</span>
+            </div>
+        </div>
+
+        <!-- MENSAJES DE ÉXITO Y ERROR -->
+        <div th:if="${mensajeExito}" class="alerta alerta-exito">
+            <span th:text="${mensajeExito}"></span>
+        </div>
+        <div th:if="${mensajeError}" class="alerta alerta-error">
+            <span th:text="${mensajeError}"></span>
+        </div>
+
+        <!-- CONTENIDO DE CADA PÁGINA -->
+        <div class="contenido-inner" th:fragment="contenido">
+            <th:block th:replace="${contenido}"></th:block>
+        </div>
+    </div>
+
+</body>
+</html>

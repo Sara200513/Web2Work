@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Recuperar Contraseña</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body class="pagina-auth">
+    <div class="login-contenedor">
+        <div class="login-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+
+        <p class="auth-titulo">RECUPERAR CONTRASEÑA</p>
+        <p class="auth-descripcion">Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
+
+        <div th:if="${mensajeExito}" class="alerta alerta-exito">
+            <span th:text="${mensajeExito}"></span>
+        </div>
+
+        <form th:action="@{/recuperar}" method="post">
+            <div class="form-grupo">
+                <label>CORREO ELECTRÓNICO *</label>
+                <input type="email" name="email" placeholder="correo@ejemplo.com" required>
+            </div>
+
+            <button type="submit" class="btn-primario btn-completo">ENVIAR ENLACE</button>
+
+            <div class="auth-volver">
+                <a th:href="@{/login}">← Volver al inicio de sesión</a>
+            </div>
+        </form>
+    </div>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

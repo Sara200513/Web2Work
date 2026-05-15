@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Ficha alumno</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/profesores/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/convenios}">Convenios FE</a></li>
+                <li class="activo"><a th:href="@{/alumnos}">Alumnos</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1 th:text="'Ficha de ' + ${alumno.nombre} + ' ' + ${alumno.apellidos}">Ficha alumno</h1>
+            <div class="usuario-info"><span>Profesor</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="fila-dos-columnas">
+
+                <!-- DATOS Y PROGRESO -->
+                <div class="tabla-contenedor">
+                    <h2>Datos del alumno</h2>
+                    <div class="info-empresa">
+                        <p><strong>DNI: </strong><span th:text="${alumno.dni}"></span></p>
+                        <p><strong>Correo: </strong><span th:text="${alumno.email}"></span></p>
+                        <p><strong>Teléfono: </strong><span th:text="${alumno.telefono}"></span></p>
+                        <p><strong>Curso: </strong><span th:text="${alumno.curso}"></span></p>
+                        <p><strong>Grupo: </strong><span th:text="${alumno.grupo}"></span></p>
+                    </div>
+                    <h2>Progreso horas</h2>
+                    <div class="progreso-contenedor">
+                        <div class="progreso-barra">
+                            <div class="progreso-relleno" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="info-empresa">
+                        <label>DEJAR OBSERVACIÓN</label>
+                        <form th:action="@{/comentarios/nuevo}" method="post">
+                            <input type="hidden" name="targetType" value="alumno">
+                            <input type="hidden" name="targetId" th:value="${alumno.id}">
+                            <div class="form-grupo">
+                                <textarea name="texto" placeholder="Escribe una observación..."></textarea>
+                            </div>
+                            <button type="submit" class="btn-primario">Guardar observación</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- EVALUACIÓN -->
+                <div class="tabla-contenedor">
+                    <h2>Evaluación final</h2>
+                    <div class="info-empresa">
+                        <form th:action="@{/evaluaciones/nueva}" method="post">
+                            <input type="hidden" name="evaluadorId" th:value="${alumno.id}">
+                            <div class="form-grupo">
+                                <label>TIPO</label>
+                                <select name="tipo">
+                                    <option value="intermedio">Intermedia</option>
+                                    <option value="final">Final</option>
+                                </select>
+                            </div>
+                            <div class="form-grupo">
+                                <label>NOTA FINAL</label>
+                                <input type="number" name="notaFinal" min="0" max="10" step="0.1"
+                                       placeholder="0.0">
+                            </div>
+                            <div class="form-grupo">
+                                <label>COMENTARIOS</label>
+                                <textarea name="comentarios" placeholder="Comentarios de la evaluación..."></textarea>
+                            </div>
+                            <button type="submit" class="btn-teal">Evaluar alumno</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTIVIDADES -->
+            <div class="tabla-contenedor">
+                <h2>Actividades registradas</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Actividad</th>
+                            <th>Horas</th>
+                            <th>Evidencia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="asignacion : ${asignaciones}">
+                            <td colspan="4" class="sin-datos"
+                                th:if="${#lists.isEmpty(asignaciones)}">
+                                No hay actividades registradas.
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(asignaciones)}">
+                            <td colspan="4" class="sin-datos">No hay actividades registradas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Conversación</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/mensajeria.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/actividades/nueva}">Mis prácticas</a></li>
+                <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+                <li class="activo"><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Conversación</h1>
+            <div class="usuario-info"><span>Alumno</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="mensajeria-contenedor">
+
+                <!-- LISTA CONVERSACIONES -->
+                <div class="conversaciones-panel">
+                    <div class="conversaciones-cabecera">
+                        <h3>Conversaciones</h3>
+                        <a th:href="@{/mensajes/nuevo}" class="btn-teal btn-pequeño">+ Nuevo</a>
+                    </div>
+                    <ul class="conversaciones-lista">
+                        <li class="conversacion-item activa">
+                            <a th:href="@{/mensajes/{id}(id=${mensaje.id})}">
+                                <span class="conv-nombre"
+                                      th:text="${mensaje.fromUser.nombre + ' ' + mensaje.fromUser.apellidos}">
+                                    Usuario
+                                </span>
+                                <span class="conv-preview" th:text="${mensaje.asunto}">Asunto</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- HILO DE MENSAJES -->
+                <div class="mensaje-panel">
+                    <div class="mensaje-cabecera">
+                        <h3 th:text="${mensaje.fromUser.nombre + ' ' + mensaje.fromUser.apellidos}">
+                            Usuario
+                        </h3>
+                    </div>
+                    <div class="hilo-mensajes">
+                        <div class="mensaje-burbuja recibido">
+                            <p th:text="${mensaje.cuerpo}">Mensaje recibido</p>
+                            <span class="mensaje-hora"
+                                  th:text="${mensaje.createdAt}">Hora</span>
+                        </div>
+                    </div>
+                    <div class="mensaje-redactar">
+                        <form th:action="@{/mensajes/nuevo}" method="post">
+                            <input type="hidden" name="toUserId"
+                                   th:value="${mensaje.fromUser.id}">
+                            <textarea name="cuerpo"
+                                      placeholder="Escribe un mensaje..."></textarea>
+                            <button type="submit" class="btn-primario">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

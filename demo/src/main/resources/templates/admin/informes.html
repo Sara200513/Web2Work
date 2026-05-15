@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Informes</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+                <li><a th:href="@{/admin/roles}">Roles</a></li>
+                <li><a th:href="@{/admin/config}">Config. sistema</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li class="activo"><a th:href="@{/admin/informes}">Informes</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Informes del sistema</h1>
+            <div class="usuario-info"><span>Admin</span></div>
+        </div>
+
+        <div class="contenido-inner">
+
+            <!-- RESUMEN GLOBAL -->
+            <div class="tarjetas-resumen">
+                <div class="tarjeta">
+                    <h3>Total usuarios</h3>
+                    <p class="numero" th:text="${resumen.totalUsuarios}">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Total alumnos</h3>
+                    <p class="numero" th:text="${resumen.totalAlumnos}">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Convenios activos</h3>
+                    <p class="numero" th:text="${resumen.conveniosActivos}">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Alumnos en prácticas</h3>
+                    <p class="numero" th:text="${resumen.alumnosEnPracticas}">0</p>
+                </div>
+            </div>
+
+            <!-- ACCESOS A INFORMES -->
+            <div class="tabla-contenedor">
+                <h2>Generar informes</h2>
+                <div class="informes-grid">
+                    <div class="informe-card">
+                        <h3>Alumnos por empresa</h3>
+                        <p>Resumen de alumnos asignados a cada empresa.</p>
+                        <a th:href="@{/admin/informes/alumnos-empresa}"
+                           class="btn-primario">Ver informe</a>
+                    </div>
+                    <div class="informe-card">
+                        <h3>Evaluaciones emitidas</h3>
+                        <p>Listado de todas las evaluaciones realizadas.</p>
+                        <a th:href="@{/admin/informes/evaluaciones}"
+                           class="btn-primario">Ver informe</a>
+                    </div>
+                    <div class="informe-card">
+                        <h3>Progreso por alumno</h3>
+                        <p>Estado y porcentaje de horas de cada alumno.</p>
+                        <a th:href="@{/admin/informes/progreso}"
+                           class="btn-primario">Ver informe</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ALUMNOS POR CURSO -->
+            <div class="tabla-contenedor">
+                <h2>Alumnos por curso</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Curso</th>
+                            <th>Total alumnos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entry : ${alumnosPorCurso}">
+                            <td th:text="${entry.key}">Curso</td>
+                            <td th:text="${entry.value}">0</td>
+                        </tr>
+                        <tr th:if="${#maps.isEmpty(alumnosPorCurso)}">
+                            <td colspan="2" class="sin-datos">No hay datos.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- CONVENIOS POR ESTADO -->
+            <div class="tabla-contenedor">
+                <h2>Convenios por estado</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Total convenios</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entry : ${conveniosPorEstado}">
+                            <td>
+                                <span th:class="'badge badge-' + ${entry.key}"
+                                      th:text="${entry.key}">Estado</span>
+                            </td>
+                            <td th:text="${entry.value}">0</td>
+                        </tr>
+                        <tr th:if="${#maps.isEmpty(conveniosPorEstado)}">
+                            <td colspan="2" class="sin-datos">No hay datos.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- MEDIA NOTAS POR EMPRESA -->
+            <div class="tabla-contenedor">
+                <h2>Media de notas por empresa</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Empresa</th>
+                            <th>Media</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entry : ${mediaNotas}">
+                            <td th:text="${entry.key}">Empresa</td>
+                            <td th:text="${entry.value}">0.0</td>
+                        </tr>
+                        <tr th:if="${#maps.isEmpty(mediaNotas)}">
+                            <td colspan="2" class="sin-datos">No hay evaluaciones.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

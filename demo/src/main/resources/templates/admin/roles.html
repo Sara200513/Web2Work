@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Gestión roles</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+                <li class="activo"><a th:href="@{/admin/roles}">Roles</a></li>
+                <li><a th:href="@{/admin/config}">Config. sistema</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/admin/informes}">Informes</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Gestión de roles</h1>
+            <div class="usuario-info"><span>Admin</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div th:if="${mensajeExito}" class="alerta alerta-exito">
+                <span th:text="${mensajeExito}"></span>
+            </div>
+
+            <div class="tabla-contenedor">
+                <h2>Asignar roles</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Rol actual</th>
+                            <th>Cambiar rol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="usuario : ${usuarios}">
+                            <td th:text="${usuario.nombre + ' ' + usuario.apellidos}">
+                                Nombre
+                            </td>
+                            <td th:text="${usuario.email}">correo</td>
+                            <td>
+                                <span th:class="'badge badge-activo'"
+                                      th:text="${usuario.rol}">Rol</span>
+                            </td>
+                            <td>
+                                <form th:action="@{/admin/roles/cambiar}" method="post"
+                                      style="display:flex; gap:8px; align-items:center;">
+                                    <input type="hidden" name="usuarioId"
+                                           th:value="${usuario.id}">
+                                    <select name="nuevoRol" class="select-filtro">
+                                        <option value="alumno"
+                                                th:selected="${usuario.rol == 'alumno'}">
+                                            Alumno
+                                        </option>
+                                        <option value="profesor"
+                                                th:selected="${usuario.rol == 'profesor'}">
+                                            Profesor
+                                        </option>
+                                        <option value="empresa"
+                                                th:selected="${usuario.rol == 'empresa'}">
+                                            Empresa
+                                        </option>
+                                        <option value="admin"
+                                                th:selected="${usuario.rol == 'admin'}">
+                                            Administrador
+                                        </option>
+                                    </select>
+                                    <button type="submit" class="btn-teal btn-pequeño">
+                                        Guardar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(usuarios)}">
+                            <td colspan="4" class="sin-datos">
+                                No hay usuarios registrados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

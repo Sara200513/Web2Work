@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Actividades</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
+                <li class="activo"><a th:href="@{/actividades}">Mis prácticas</a></li>
+                <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Actividades registradas</h1>
+            <div class="usuario-info"><span>Alumno</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div th:if="${mensajeExito}" class="alerta alerta-exito">
+                <span th:text="${mensajeExito}"></span>
+            </div>
+
+            <div class="tabla-contenedor">
+                <h2>Mis actividades</h2>
+                <div class="tabla-acciones">
+                    <a th:href="@{/actividades/nueva}" class="btn-primario">+ Nueva actividad</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Título</th>
+                            <th>Horas</th>
+                            <th>Categoría</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="actividad : ${actividades}">
+                            <td th:text="${actividad.fecha}">Fecha</td>
+                            <td th:text="${actividad.titulo}">Título</td>
+                            <td th:text="${actividad.horas}">0</td>
+                            <td th:text="${actividad.categoria}">Categoría</td>
+                            <td>
+                                <a th:href="@{/actividades/{id}(id=${actividad.id})}"
+                                   class="btn-teal btn-pequeño">Ver</a>
+                                <a th:href="@{/actividades/editar/{id}(id=${actividad.id})}"
+                                   class="btn-secundario btn-pequeño">Editar</a>
+                                <a th:href="@{/actividades/eliminar/{id}(id=${actividad.id})}"
+                                   class="btn-secundario btn-pequeño"
+                                   onclick="return confirm('¿Eliminar actividad?')">Eliminar</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(actividades)}">
+                            <td colspan="5" class="sin-datos">No hay actividades registradas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

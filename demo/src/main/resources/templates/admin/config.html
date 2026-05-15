@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Configuración</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+                <li><a th:href="@{/admin/roles}">Roles</a></li>
+                <li class="activo"><a th:href="@{/admin/config}">Config. sistema</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/admin/informes}">Informes</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Configuración del sistema</h1>
+            <div class="usuario-info"><span>Admin</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div th:if="${mensajeExito}" class="alerta alerta-exito">
+                <span th:text="${mensajeExito}"></span>
+            </div>
+
+            <div class="formulario">
+                <h2>Parámetros generales</h2>
+                <form th:action="@{/admin/config}" method="post">
+                    <div class="form-grupo">
+                        <label>NOMBRE DEL CENTRO EDUCATIVO</label>
+                        <input type="text" name="nombreCentro"
+                               placeholder="CIFP La Laboral">
+                    </div>
+                    <div class="form-grupo">
+                        <label>CORREO DEL SISTEMA</label>
+                        <input type="email" name="emailSistema"
+                               placeholder="noreply@web2work.es">
+                    </div>
+
+                    <p class="seccion-titulo">CONFIGURACIÓN DE SEGURIDAD</p>
+
+                    <div class="form-grupo">
+                        <label>EXPIRACIÓN TOKEN RECUPERACIÓN (horas)</label>
+                        <input type="number" name="expiracionToken"
+                               value="24" min="1" max="72">
+                    </div>
+
+                    <p class="seccion-titulo">CONFIGURACIÓN SMTP</p>
+
+                    <div class="form-grupo">
+                        <label>HOST SMTP</label>
+                        <input type="text" name="smtpHost"
+                               placeholder="smtp.gmail.com">
+                    </div>
+                    <div class="form-grupo">
+                        <label>PUERTO SMTP</label>
+                        <input type="number" name="smtpPuerto"
+                               placeholder="587">
+                    </div>
+                    <div class="form-grupo">
+                        <label>USUARIO SMTP</label>
+                        <input type="email" name="smtpUsuario"
+                               placeholder="correo@gmail.com">
+                    </div>
+                    <div class="form-grupo">
+                        <label>CONTRASEÑA SMTP</label>
+                        <input type="password" name="smtpPassword"
+                               placeholder="••••••••">
+                    </div>
+
+                    <div class="form-acciones">
+                        <button type="submit" class="btn-primario">
+                            Guardar configuración
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

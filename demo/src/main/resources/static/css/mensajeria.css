@@ -1,0 +1,204 @@
+.mensajeria-contenedor {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 0;
+    background-color: var(--blanco);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    height: calc(100vh - 160px);
+}
+
+.conversaciones-panel {
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+.conversaciones-cabecera {
+    padding: 16px;
+    background-color: var(--navy);
+    color: var(--blanco);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.conversaciones-cabecera h3 {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.conversaciones-lista {
+    list-style: none;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.conversacion-item a {
+    display: block;
+    padding: 12px 16px;
+    text-decoration: none;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background 0.2s;
+}
+
+.conversacion-item a:hover {
+    background-color: var(--teal-claro);
+}
+
+.conversacion-item.activa a {
+    background-color: var(--teal-claro);
+    border-left: 3px solid var(--teal);
+}
+
+.conversacion-item.no-leido a {
+    font-weight: 700;
+}
+
+.conv-nombre {
+    display: block;
+    font-size: 14px;
+    color: var(--navy);
+    font-weight: 600;
+}
+
+.conv-preview {
+    display: block;
+    font-size: 12px;
+    color: var(--texto-secundario);
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mensaje-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.mensaje-cabecera {
+    padding: 16px;
+    background-color: var(--gris-claro);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.mensaje-cabecera h3 {
+    font-size: 15px;
+    color: var(--navy);
+}
+
+.hilo-mensajes {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mensaje-burbuja {
+    max-width: 65%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.mensaje-burbuja.recibido {
+    background-color: var(--gris-claro);
+    align-self: flex-start;
+}
+
+.mensaje-burbuja.enviado {
+    background-color: var(--teal-claro);
+    align-self: flex-end;
+}
+
+.mensaje-hora {
+    display: block;
+    font-size: 11px;
+    color: var(--texto-secundario);
+    margin-top: 4px;
+    text-align: right;
+}
+
+.mensaje-vacio {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--texto-secundario);
+    font-size: 14px;
+}
+
+.mensaje-redactar {
+    padding: 16px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.mensaje-redactar form {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.mensaje-redactar textarea {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1.5px solid #CCCCCC;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    resize: none;
+    height: 60px;
+}
+
+.mensaje-redactar textarea:focus {
+    outline: none;
+    border-color: var(--teal);
+}
+
+/* NOTIFICACIONES */
+.notificaciones-lista {
+    list-style: none;
+    padding: 0;
+}
+
+.notificacion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background 0.2s;
+}
+
+.notificacion-item:hover {
+    background-color: var(--teal-claro);
+}
+
+.notificacion-item.no-leida {
+    border-left: 4px solid var(--teal);
+    background-color: var(--teal-claro);
+}
+
+.notificacion-tipo {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.notificacion-contenido p {
+    font-size: 14px;
+    color: var(--texto-principal);
+    margin: 4px 0;
+}
+
+.notificacion-fecha {
+    font-size: 11px;
+    color: var(--texto-secundario);
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Asignar alumno</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/profesores/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/convenios}">Convenios FE</a></li>
+                <li class="activo"><a th:href="@{/alumnos}">Alumnos</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Asignar alumno a empresa</h1>
+            <div class="usuario-info"><span>Profesor</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="formulario">
+                <h2>Nueva asignación</h2>
+                <form th:action="@{/asignaciones/nueva}" method="post">
+                    <div class="form-grupo">
+                        <label>ALUMNO *</label>
+                        <select name="alumnoId" required>
+                            <option value="">Seleccionar alumno...</option>
+                            <option th:each="alumno : ${alumnos}"
+                                    th:value="${alumno.id}"
+                                    th:text="${alumno.nombre + ' ' + alumno.apellidos +
+                                    ' - ' + alumno.curso}">
+                                Alumno
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label>CONVENIO ACTIVO *</label>
+                        <select name="convenioId" required>
+                            <option value="">Seleccionar convenio...</option>
+                            <option th:each="convenio : ${convenios}"
+                                    th:value="${convenio.id}"
+                                    th:text="${convenio.empresa.nombreEmpresa +
+                                    ' - ' + convenio.titulo}">
+                                Convenio
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label>ESTADO</label>
+                        <select name="estadoAsignacion">
+                            <option value="asignado">Asignado</option>
+                            <option value="en_practicas">En prácticas</option>
+                            <option value="finalizado">Finalizado</option>
+                        </select>
+                    </div>
+                    <div class="form-acciones">
+                        <button type="submit" class="btn-primario">Confirmar asignación</button>
+                        <a th:href="@{/alumnos}" class="btn-secundario">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

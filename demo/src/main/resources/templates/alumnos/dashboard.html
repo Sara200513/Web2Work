@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Dashboard Alumno</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="activo"><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/actividades/nueva}">Mis prácticas</a></li>
+                <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Resumen de mis prácticas</h1>
+            <div class="usuario-info">
+                <span>Alumno</span>
+            </div>
+        </div>
+
+        <div class="contenido-inner">
+
+            <!-- TARJETAS RESUMEN -->
+            <div class="tarjetas-resumen">
+                <div class="tarjeta">
+                    <h3>Horas registradas</h3>
+                    <p class="numero" th:text="${horasRegistradas} ?: '0'">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Actividades</h3>
+                    <p class="numero" th:text="${totalActividades} ?: '0'">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Evidencias</h3>
+                    <p class="numero" th:text="${totalEvidencias} ?: '0'">0</p>
+                </div>
+                <div class="tarjeta">
+                    <h3>Evaluaciones</h3>
+                    <p class="numero" th:text="${totalEvaluaciones} ?: '0'">0</p>
+                </div>
+            </div>
+
+            <!-- EMPRESA Y PROGRESO -->
+            <div class="fila-dos-columnas">
+                <div class="tabla-contenedor">
+                    <h2>Empresa asignada</h2>
+                    <div class="info-empresa">
+                        <p th:if="${asignacion != null}">
+                            <strong th:text="${asignacion.convenio.empresa.nombreEmpresa}">Nombre empresa</strong><br>
+                            <span th:text="${asignacion.convenio.profesor.nombre}">Tutor académico</span><br>
+                            <span th:text="${asignacion.convenio.fechaInicio}">Fecha inicio</span> -
+                            <span th:text="${asignacion.convenio.fechaFin}">Fecha fin</span>
+                        </p>
+                        <p th:if="${asignacion == null}" class="sin-datos">
+                            No tienes empresa asignada todavía.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="tabla-contenedor">
+                    <h2>Progreso total</h2>
+                    <div class="progreso-contenedor">
+                        <p class="progreso-texto">
+                            <span th:text="${horasRegistradas} ?: '0'">0</span> /
+                            <span th:text="${horasTotales} ?: '0'">0</span> horas completadas
+                        </p>
+                        <div class="progreso-barra">
+                            <div class="progreso-relleno"
+                                 th:style="'width:' + ${porcentaje} + '%'">
+                            </div>
+                        </div>
+                        <p class="progreso-porcentaje" th:text="${porcentaje} + '%'">0%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÚLTIMAS ACTIVIDADES -->
+            <div class="tabla-contenedor">
+                <h2>Últimas actividades</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Actividad</th>
+                            <th>Horas</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="actividad : ${ultimasActividades}">
+                            <td th:text="${actividad.fecha}">01/01/2025</td>
+                            <td th:text="${actividad.titulo}">Título</td>
+                            <td th:text="${actividad.horas}">0</td>
+                            <td>
+                                <span class="badge badge-activo">Revisada</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(ultimasActividades)}">
+                            <td colspan="4" class="sin-datos">No hay actividades registradas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

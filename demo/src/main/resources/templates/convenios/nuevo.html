@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Nuevo convenio</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/profesores/dashboard}">Dashboard</a></li>
+                <li class="activo"><a th:href="@{/convenios}">Convenios FE</a></li>
+                <li><a th:href="@{/alumnos}">Alumnos</a></li>
+                <li><a th:href="@{/mensajes}">Mensajería</a></li>
+                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Nuevo convenio</h1>
+            <div class="usuario-info"><span>Profesor</span></div>
+        </div>
+
+        <div class="contenido-inner">
+            <div class="formulario">
+                <h2>Crear convenio FE</h2>
+                <form th:action="@{/convenios/nuevo}" method="post">
+                    <div class="form-grupo">
+                        <label>EMPRESA *</label>
+                        <select name="empresaId" required>
+                            <option value="">Seleccionar empresa...</option>
+                            <option th:each="empresa : ${empresas}"
+                                    th:value="${empresa.id}"
+                                    th:text="${empresa.nombreEmpresa}">Empresa</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label>TÍTULO *</label>
+                        <input type="text" name="titulo"
+                               placeholder="Título del convenio" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>FECHA INICIO *</label>
+                        <input type="date" name="fechaInicio" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>FECHA FIN *</label>
+                        <input type="date" name="fechaFin" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>HORAS TOTALES *</label>
+                        <input type="number" name="horasTotales"
+                               placeholder="400" min="1" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>ESTADO</label>
+                        <select name="estado">
+                            <option value="pendiente">Pendiente</option>
+                            <option value="activo">Activo</option>
+                            <option value="finalizado">Finalizado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="form-acciones">
+                        <button type="submit" class="btn-primario">Guardar</button>
+                        <a th:href="@{/convenios}" class="btn-secundario">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

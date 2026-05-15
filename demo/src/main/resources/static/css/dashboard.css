@@ -1,0 +1,88 @@
+.fila-dos-columnas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.info-empresa {
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.info-convenio {
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.info-convenio p {
+    margin-bottom: 8px;
+}
+
+.progreso-contenedor {
+    padding: 16px;
+}
+
+.progreso-texto {
+    font-size: 13px;
+    color: var(--texto-secundario);
+    margin-bottom: 8px;
+}
+
+.progreso-porcentaje {
+    font-size: 13px;
+    color: var(--teal);
+    text-align: right;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.btn-pequeño {
+    padding: 4px 10px;
+    font-size: 12px;
+    margin-right: 4px;
+}
+
+.sin-datos {
+    text-align: center;
+    color: var(--texto-secundario);
+    font-size: 13px;
+    padding: 16px;
+}
+
+.tabla-acciones {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.input-busqueda {
+    padding: 8px 12px;
+    border: 1.5px solid #CCCCCC;
+    border-radius: 4px;
+    background-color: var(--gris-claro);
+    font-size: 14px;
+    flex: 1;
+}
+
+.input-busqueda:focus {
+    outline: none;
+    border-color: var(--teal);
+}
+
+.select-filtro {
+    padding: 8px 12px;
+    border: 1.5px solid #CCCCCC;
+    border-radius: 4px;
+    background-color: var(--gris-claro);
+    font-size: 14px;
+}
+
+.sidebar-logo img {
+    max-width: 140px;
+    padding: 8px;
+}
