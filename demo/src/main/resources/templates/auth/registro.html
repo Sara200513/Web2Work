@@ -4,143 +4,262 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web2Work - Registro</title>
+
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
+
 <body class="pagina-auth">
-    <div class="registro-contenedor">
-        <div class="login-logo">
-            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
-        </div>
 
-        <p class="auth-titulo">CREAR CUENTA</p>
+<div class="registro-contenedor">
 
-        <div th:if="${mensajeError}" class="alerta alerta-error">
-            <span th:text="${mensajeError}"></span>
-        </div>
-
-        <form th:action="@{/registro}" method="post">
-
-            <p class="seccion-titulo">DATOS PERSONALES</p>
-            <div class="form-fila">
-                <div class="form-grupo">
-                    <label>NOMBRE *</label>
-                    <input type="text" name="nombre" placeholder="Nombre" required>
-                </div>
-                <div class="form-grupo">
-                    <label>APELLIDOS *</label>
-                    <input type="text" name="apellidos" placeholder="Apellidos" required>
-                </div>
-            </div>
-            <div class="form-fila">
-                <div class="form-grupo">
-                    <label>DNI *</label>
-                    <input type="text" name="dni" placeholder="12345678A" required>
-                </div>
-                <div class="form-grupo">
-                    <label>FECHA DE NACIMIENTO *</label>
-                    <input type="date" name="fechaNacimiento" required>
-                </div>
-            </div>
-            <div class="form-grupo">
-                <label>CORREO ELECTRÓNICO *</label>
-                <input type="email" name="email" placeholder="correo@ejemplo.com" required>
-            </div>
-            <div class="form-grupo">
-                <label>TELÉFONO *</label>
-                <input type="tel" name="telefono" placeholder="600000000" required>
-            </div>
-
-            <p class="seccion-titulo">ACCESO Y ROL</p>
-            <div class="form-fila">
-                <div class="form-grupo">
-                    <label>CONTRASEÑA *</label>
-                    <input type="password" name="password" placeholder="••••••••" required>
-                </div>
-                <div class="form-grupo">
-                    <label>CONFIRMAR CONTRASEÑA *</label>
-                    <input type="password" name="confirmarPassword" placeholder="••••••••" required>
-                </div>
-            </div>
-            <div class="form-grupo">
-                <label>ROL *</label>
-                <select name="rol" id="selectRol" onchange="mostrarCampos()" required>
-                    <option value="">Seleccionar rol...</option>
-                    <option value="alumno">Alumno</option>
-                    <option value="profesor">Profesor</option>
-                    <option value="empresa">Empresa</option>
-                </select>
-            </div>
-
-            <div id="campos-alumno" class="campos-dinamicos">
-                <p class="seccion-titulo">DATOS DEL ALUMNO</p>
-                <div class="form-fila">
-                    <div class="form-grupo">
-                        <label>CURSO</label>
-                        <input type="text" name="curso" placeholder="2º DAW">
-                    </div>
-                    <div class="form-grupo">
-                        <label>GRUPO</label>
-                        <input type="text" name="grupo" placeholder="A">
-                    </div>
-                </div>
-            </div>
-
-            <div id="campos-profesor" class="campos-dinamicos">
-                <p class="seccion-titulo">DATOS DEL PROFESOR</p>
-                <div class="form-grupo">
-                    <label>DEPARTAMENTO</label>
-                    <input type="text" name="departamento" placeholder="Informática">
-                </div>
-                <div class="form-grupo">
-                    <label>ESPECIALIDAD</label>
-                    <input type="text" name="especialidad" placeholder="Desarrollo Web">
-                </div>
-            </div>
-
-            <div id="campos-empresa" class="campos-dinamicos">
-                <p class="seccion-titulo">DATOS DE LA EMPRESA</p>
-                <div class="form-fila">
-                    <div class="form-grupo">
-                        <label>CIF</label>
-                        <input type="text" name="cif" placeholder="B12345678">
-                    </div>
-                    <div class="form-grupo">
-                        <label>RAZÓN SOCIAL</label>
-                        <input type="text" name="razonSocial" placeholder="Empresa S.L.">
-                    </div>
-                </div>
-                <div class="form-grupo">
-                    <label>NOMBRE DE LA EMPRESA</label>
-                    <input type="text" name="nombreEmpresa" placeholder="Nombre comercial">
-                </div>
-                <div class="form-grupo">
-                    <label>SECTOR</label>
-                    <input type="text" name="sector" placeholder="Tecnología">
-                </div>
-                <div class="form-grupo">
-                    <label>DIRECCIÓN</label>
-                    <input type="text" name="direccion" placeholder="Calle, número, ciudad">
-                </div>
-                <div class="form-fila">
-                    <div class="form-grupo">
-                        <label>NOMBRE CONTACTO</label>
-                        <input type="text" name="contactoNombre" placeholder="Nombre del tutor">
-                    </div>
-                    <div class="form-grupo">
-                        <label>TELÉFONO CONTACTO</label>
-                        <input type="tel" name="contactoTelefono" placeholder="600000000">
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-primario btn-completo">REGISTRARSE</button>
-
-            <div class="auth-volver">
-                ¿Ya tienes cuenta? <a th:href="@{/login}">Iniciar sesión</a>
-            </div>
-        </form>
+    <div class="login-logo">
+        <img th:src="@{/imagenes/Imagen1.jpeg}" alt="Web2Work">
     </div>
-    <script th:src="@{/js/scripts.js}"></script>
+
+    <p class="auth-titulo">CREAR CUENTA</p>
+
+    <!-- MENSAJES -->
+    <div th:if="${mensajeError}" class="alerta alerta-error">
+        <span th:text="${mensajeError}"></span>
+    </div>
+
+    <div th:if="${mensajeExito}" class="alerta alerta-exito">
+        <span th:text="${mensajeExito}"></span>
+    </div>
+
+    <form th:action="@{/registro}" method="post">
+
+        <!-- CSRF -->
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}">
+
+        <!-- DATOS PERSONALES -->
+        <p class="seccion-titulo">DATOS PERSONALES</p>
+
+        <div class="form-fila">
+
+            <div class="form-grupo">
+                <label>NOMBRE *</label>
+                <input type="text"
+                       name="nombre"
+                       placeholder="Nombre"
+                       required>
+            </div>
+
+            <div class="form-grupo">
+                <label>APELLIDOS *</label>
+                <input type="text"
+                       name="apellidos"
+                       placeholder="Apellidos"
+                       required>
+            </div>
+
+        </div>
+
+        <div class="form-fila">
+
+            <div class="form-grupo">
+                <label>DNI *</label>
+                <input type="text"
+                       name="dni"
+                       placeholder="12345678A"
+                       required>
+            </div>
+
+            <div class="form-grupo">
+                <label>FECHA DE NACIMIENTO *</label>
+                <input type="date"
+                       name="fechaNacimiento"
+                       required>
+            </div>
+
+        </div>
+
+        <div class="form-grupo">
+            <label>CORREO ELECTRÓNICO *</label>
+            <input type="email"
+                   name="email"
+                   placeholder="correo@ejemplo.com"
+                   required>
+        </div>
+
+        <div class="form-grupo">
+            <label>TELÉFONO *</label>
+            <input type="tel"
+                   name="telefono"
+                   placeholder="600000000"
+                   required>
+        </div>
+
+        <!-- PASSWORD -->
+        <p class="seccion-titulo">ACCESO Y ROL</p>
+
+        <div class="form-fila">
+
+            <div class="form-grupo">
+                <label>CONTRASEÑA *</label>
+                <input type="password"
+                       name="password"
+                       placeholder="••••••••"
+                       required>
+            </div>
+
+            <div class="form-grupo">
+                <label>CONFIRMAR CONTRASEÑA *</label>
+                <input type="password"
+                       name="confirmarPassword"
+                       placeholder="••••••••"
+                       required>
+            </div>
+
+        </div>
+
+        <!-- ROL -->
+        <div class="form-grupo">
+            <label>ROL *</label>
+
+            <select name="rol"
+                    id="selectRol"
+                    onchange="mostrarCampos()"
+                    required>
+
+                <option value="">Seleccionar rol...</option>
+                <option value="alumno">Alumno</option>
+                <option value="profesor">Profesor</option>
+                <option value="empresa">Empresa</option>
+
+            </select>
+        </div>
+
+        <!-- ALUMNO -->
+        <div id="campos-alumno" class="campos-dinamicos">
+
+            <p class="seccion-titulo">DATOS DEL ALUMNO</p>
+
+            <div class="form-fila">
+
+                <div class="form-grupo">
+                    <label>CURSO</label>
+                    <input type="text"
+                           name="curso"
+                           placeholder="2º DAW">
+                </div>
+
+                <div class="form-grupo">
+                    <label>GRUPO</label>
+                    <input type="text"
+                           name="grupo"
+                           placeholder="A">
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- PROFESOR -->
+        <div id="campos-profesor" class="campos-dinamicos">
+
+            <p class="seccion-titulo">DATOS DEL PROFESOR</p>
+
+            <div class="form-grupo">
+                <label>DEPARTAMENTO</label>
+                <input type="text"
+                       name="departamento"
+                       placeholder="Informática">
+            </div>
+
+            <div class="form-grupo">
+                <label>ESPECIALIDAD</label>
+                <input type="text"
+                       name="especialidad"
+                       placeholder="Desarrollo Web">
+            </div>
+
+        </div>
+
+        <!-- EMPRESA -->
+        <div id="campos-empresa" class="campos-dinamicos">
+
+            <p class="seccion-titulo">DATOS DE LA EMPRESA</p>
+
+            <div class="form-fila">
+
+                <div class="form-grupo">
+                    <label>CIF</label>
+                    <input type="text"
+                           name="cif"
+                           placeholder="B12345678">
+                </div>
+
+                <div class="form-grupo">
+                    <label>RAZÓN SOCIAL</label>
+                    <input type="text"
+                           name="razonSocial"
+                           placeholder="Empresa S.L.">
+                </div>
+
+            </div>
+
+            <div class="form-grupo">
+                <label>NOMBRE DE LA EMPRESA</label>
+                <input type="text"
+                       name="nombreEmpresa"
+                       placeholder="Nombre comercial">
+            </div>
+
+            <div class="form-grupo">
+                <label>SECTOR</label>
+                <input type="text"
+                       name="sector"
+                       placeholder="Tecnología">
+            </div>
+
+            <div class="form-grupo">
+                <label>DIRECCIÓN</label>
+                <input type="text"
+                       name="direccion"
+                       placeholder="Calle, número, ciudad">
+            </div>
+
+            <div class="form-fila">
+
+                <div class="form-grupo">
+                    <label>NOMBRE CONTACTO</label>
+                    <input type="text"
+                           name="contactoNombre"
+                           placeholder="Nombre del tutor">
+                </div>
+
+                <div class="form-grupo">
+                    <label>TELÉFONO CONTACTO</label>
+                    <input type="tel"
+                           name="contactoTelefono"
+                           placeholder="600000000">
+                </div>
+
+            </div>
+
+        </div>
+
+        <button type="submit"
+                class="btn-primario btn-completo">
+            REGISTRARSE
+        </button>
+
+        <div class="auth-volver">
+            ¿Ya tienes cuenta?
+            <a th:href="@{/login}">
+                Iniciar sesión
+            </a>
+        </div>
+
+    </form>
+
+</div>
+
+<script th:src="@{/js/scripts.js}"></script>
+
 </body>
 </html>

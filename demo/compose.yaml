@@ -1,0 +1,44 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+
+    container_name: web2work-mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: web2work
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    restart: always
+
+  app:
+    build: .
+
+    container_name: web2work-app
+
+    depends_on:
+      - mysql
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/web2work?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+      MAIL_PASSWORD: smjgyucoubthytih
+
+    restart: always
+
+volumes:
+  mysql_data:
