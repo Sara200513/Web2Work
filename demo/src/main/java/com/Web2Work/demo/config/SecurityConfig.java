@@ -38,7 +38,6 @@ public class SecurityConfig {
                 .permitAll()
             )
             .logout(logout -> logout
-                // Acepta GET desde el enlace <a href="/logout">
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/login?logout=true")
                 .invalidateHttpSession(true)

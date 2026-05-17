@@ -45,7 +45,7 @@
                         <li th:each="mensaje : ${mensajes}"
                             class="conversacion-item"
                             th:classappend="${!mensaje.leido} ? ' no-leido'">
-                            <a th:href="@{/mensajes/{id}(id=${mensaje.id})}">
+                            <a th:href="@{/mensajes/conversacion/{cid}(cid=${mensaje.conversacionId})}">
                                 <span class="conv-nombre"
                                       th:text="${mensaje.fromUser.nombre + ' ' + mensaje.fromUser.apellidos}">
                                     Usuario

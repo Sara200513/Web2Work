@@ -15,12 +15,25 @@ public class TokenRecuperacionService {
     @Autowired
     private TokenRecuperacionRepository tokenRepository;
 
+    /** Crear token de RECUPERACIÓN de contraseña */
     public TokenRecuperacion crearToken(Usuario usuario) {
         TokenRecuperacion token = new TokenRecuperacion();
         token.setToken(UUID.randomUUID().toString());
         token.setUsuario(usuario);
         token.setExpiracion(LocalDateTime.now().plusHours(24));
         token.setUsado(false);
+        token.setTipo("recuperacion");
+        return tokenRepository.save(token);
+    }
+
+    /** Crear token de VERIFICACIÓN de cuenta al registrarse */
+    public TokenRecuperacion crearTokenVerificacion(Usuario usuario) {
+        TokenRecuperacion token = new TokenRecuperacion();
+        token.setToken(UUID.randomUUID().toString());
+        token.setUsuario(usuario);
+        token.setExpiracion(LocalDateTime.now().plusHours(24));
+        token.setUsado(false);
+        token.setTipo("verificacion");
         return tokenRepository.save(token);
     }
 
@@ -36,25 +49,5 @@ public class TokenRecuperacionService {
     public void marcarComoUsado(TokenRecuperacion token) {
         token.setUsado(true);
         tokenRepository.save(token);
-    }
-    
-    public TokenRecuperacion crearTokenVerificacion(Usuario usuario) {
-        TokenRecuperacion token = new TokenRecuperacion();
-        token.setToken(UUID.randomUUID().toString());
-        token.setUsuario(usuario);
-        token.setExpiracion(LocalDateTime.now().plusHours(24));
-        token.setUsado(false);
-        token.setTipo("verificacion");
-        return tokenRepository.save(token);
-    }
-
-    public TokenRecuperacion crearToken1(Usuario usuario) {
-        TokenRecuperacion token = new TokenRecuperacion();
-        token.setToken(UUID.randomUUID().toString());
-        token.setUsuario(usuario);
-        token.setExpiracion(LocalDateTime.now().plusHours(24));
-        token.setUsado(false);
-        token.setTipo("recuperacion");
-        return tokenRepository.save(token);
     }
 }

@@ -583,3 +583,52 @@ tbody td {
     color: var(--texto-secundario);
     margin-bottom: 16px;
 }
+
+/* ===========================
+   BADGES NOTIFICACIONES
+=========================== */
+.badge-notif {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.badge-mensaje {
+    background-color: #e3f2fd;
+    color: #1565C0;
+    border: 1px solid #1565C0;
+}
+
+.badge-actividad {
+    background-color: #e8f5e9;
+    color: #2E7D32;
+    border: 1px solid #2E7D32;
+}
+
+.badge-evaluacion {
+    background-color: #fff3e0;
+    color: #E65100;
+    border: 1px solid #E65100;
+}
+
+.badge-comentario {
+    background-color: #f3e5f5;
+    color: #6A1B9A;
+    border: 1px solid #6A1B9A;
+}
+
+.badge-asignacion {
+    background-color: var(--teal-claro);
+    color: var(--teal);
+    border: 1px solid var(--teal);
+}
+
+.badge-convenio {
+    background-color: #fce4ec;
+    color: #880E4F;
+    border: 1px solid #880E4F;
+}

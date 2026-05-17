@@ -37,7 +37,7 @@ public class ConvenioFE {
     @Column(nullable = false)
     private String estado; // pendiente, activo, finalizado, cancelado
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String documentoPath;
 
     @Column(nullable = false)

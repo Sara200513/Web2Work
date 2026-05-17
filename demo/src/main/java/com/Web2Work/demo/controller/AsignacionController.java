@@ -4,7 +4,10 @@ import com.Web2Work.demo.model.Asignacion;
 import com.Web2Work.demo.service.AsignacionService;
 import com.Web2Work.demo.service.AlumnoService;
 import com.Web2Work.demo.service.ConvenioFEService;
+import com.Web2Work.demo.service.NotificacionService;
+import com.Web2Work.demo.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/asignaciones")
 public class AsignacionController {
 
-    @Autowired
-    private AsignacionService asignacionService;
-
-    @Autowired
-    private AlumnoService alumnoService;
-
-    @Autowired
-    private ConvenioFEService convenioFEService;
+    @Autowired private AsignacionService asignacionService;
+    @Autowired private AlumnoService alumnoService;
+    @Autowired private ConvenioFEService convenioFEService;
+    @Autowired private NotificacionService notificacionService;
+    @Autowired private UsuarioService usuarioService;
 
     @GetMapping
     public String listar(Model model) {
@@ -37,8 +37,40 @@ public class AsignacionController {
     }
 
     @PostMapping("/nueva")
-    public String nueva(@ModelAttribute Asignacion asignacion) {
+    public String nueva(@ModelAttribute Asignacion asignacion,
+                        Authentication auth) {
         asignacionService.save(asignacion);
+
+        var alumno = asignacion.getAlumno();
+        var empresa = asignacion.getConvenio().getEmpresa();
+        String textoAdmin = "Nueva asignación: " + alumno.getNombre() + " "
+            + alumno.getApellidos() + " → " + empresa.getNombreEmpresa();
+
+        // Notificar al alumno
+        notificacionService.crearNotificacion(
+            alumno, "ASIGNACION",
+            "Has sido asignado a la empresa: " + empresa.getNombreEmpresa(),
+            "/alumnos/dashboard");
+
+        // Notificar a la empresa
+        notificacionService.crearNotificacion(
+            empresa, "ASIGNACION",
+            "Se ha asignado un nuevo alumno: "
+                + alumno.getNombre() + " " + alumno.getApellidos(),
+            "/empresas/dashboard");
+
+        // Notificar a todos los profesores
+        usuarioService.findAll().stream()
+            .filter(u -> u.getRol().equals("profesor"))
+            .forEach(u -> notificacionService.crearNotificacion(
+                u, "ASIGNACION", textoAdmin, "/profesores/alumnos"));
+
+        // Notificar a todos los admins
+        usuarioService.findAll().stream()
+            .filter(u -> u.getRol().equals("admin"))
+            .forEach(u -> notificacionService.crearNotificacion(
+                u, "ASIGNACION", textoAdmin, "/admin/dashboard"));
+
         return "redirect:/asignaciones";
     }
 

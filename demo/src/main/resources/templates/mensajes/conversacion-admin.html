@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Conversación</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/mensajeria.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo"><img src="/imagenes/Imagen1.jpeg" alt="Web2Work"></div>
+        <nav class="sidebar-nav"><ul>
+            <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+            <li><a th:href="@{/admin/roles}">Roles</a></li>
+            <li><a th:href="@{/admin/config}">Config. sistema</a></li>
+            <li class="activo"><a th:href="@{/mensajes}">Mensajería</a></li>
+            <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+            <li><a th:href="@{/admin/informes}">Informes</a></li>
+        </ul></nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1 th:text="${asunto} ?: 'Conversación'">Conversación</h1>
+            <div class="usuario-info"><span>Admin</span></div>
+        </div>
+        <div class="contenido-inner">
+            <div class="form-acciones" style="margin-bottom:16px;">
+                <a th:href="@{/mensajes}" class="btn-secundario">← Volver</a>
+            </div>
+
+            <div class="tabla-contenedor">
+                <h2>Mensajes</h2>
+                <div class="hilo-mensajes" style="padding:16px;">
+                    <div th:each="m : ${mensajes}"
+                         th:class="${m.fromUser.email == #authentication.name}
+                                   ? 'mensaje-burbuja enviado'
+                                   : 'mensaje-burbuja recibido'">
+                        <strong th:text="${m.fromUser.nombre + ' ' + m.fromUser.apellidos}">
+                            Usuario
+                        </strong>
+                        <p th:text="${m.cuerpo}">Mensaje</p>
+                        <span class="mensaje-hora" th:text="${m.createdAt}">Hora</span>
+                    </div>
+                    <div th:if="${#lists.isEmpty(mensajes)}" class="sin-datos">
+                        No hay mensajes en esta conversación.
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabla-contenedor">
+                <h2>Responder</h2>
+                <div class="info-empresa">
+                    <form th:action="@{/mensajes/responder}" method="post">
+                        <input type="hidden" name="conversacionId"
+                               th:value="${conversacionId}">
+                        <div class="form-grupo">
+                            <label>MENSAJE *</label>
+                            <textarea name="cuerpo"
+                                      placeholder="Escribe tu respuesta..."
+                                      required></textarea>
+                        </div>
+                        <div class="form-acciones">
+                            <button type="submit" class="btn-primario">Enviar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/scripts.js}"></script>
+</body>
+</html>

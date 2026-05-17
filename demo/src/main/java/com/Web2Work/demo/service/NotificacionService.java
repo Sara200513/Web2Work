@@ -1,6 +1,7 @@
 package com.Web2Work.demo.service;
 
 import com.Web2Work.demo.model.Notificacion;
+import com.Web2Work.demo.model.Usuario;
 import com.Web2Work.demo.repository.NotificacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,17 @@ public class NotificacionService {
 
     public void deleteById(Long id) {
         notificacionRepository.deleteById(id);
+    }
+
+    // MÉTODO CENTRAL PARA CREAR NOTIFICACIONES
+    public void crearNotificacion(Usuario usuario, String tipo,
+                                   String texto, String link) {
+        Notificacion n = new Notificacion();
+        n.setUsuario(usuario);
+        n.setTipo(tipo);
+        n.setTexto(texto);
+        n.setLink(link);
+        n.setLeido(false);
+        notificacionRepository.save(n);
     }
 }

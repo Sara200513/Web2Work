@@ -4,6 +4,7 @@ import com.Web2Work.demo.model.Actividad;
 import com.Web2Work.demo.model.Asignacion;
 import com.Web2Work.demo.service.ActividadService;
 import com.Web2Work.demo.service.AsignacionService;
+import com.Web2Work.demo.service.NotificacionService;
 import com.Web2Work.demo.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,20 +19,15 @@ import java.util.List;
 @RequestMapping("/actividades")
 public class ActividadController {
 
-    @Autowired
-    private ActividadService actividadService;
-
-    @Autowired
-    private AsignacionService asignacionService;
-
-    @Autowired
-    private UsuarioService usuarioService;
+    @Autowired private ActividadService actividadService;
+    @Autowired private AsignacionService asignacionService;
+    @Autowired private UsuarioService usuarioService;
+    @Autowired private NotificacionService notificacionService;
 
     @GetMapping
     public String listar(Model model, Authentication auth) {
         if (auth != null) {
             usuarioService.findByEmail(auth.getName()).ifPresent(u -> {
-                // El alumno sólo ve sus actividades; otros roles ven todas
                 boolean esAlumno = auth.getAuthorities().stream()
                         .anyMatch(a -> a.getAuthority().equals("ROLE_ALUMNO"));
                 if (esAlumno) {
@@ -52,7 +48,6 @@ public class ActividadController {
         return "actividades/lista";
     }
 
-    /** Formulario "Mis prácticas" del alumno: muestra form + lista de actividades */
     @GetMapping("/nueva")
     public String nuevaForm(Model model, Authentication auth) {
         model.addAttribute("actividad", new Actividad());
@@ -61,7 +56,6 @@ public class ActividadController {
                 var asigs = asignacionService.findByAlumnoId(u.getId());
                 model.addAttribute("asignaciones", asigs);
                 if (!asigs.isEmpty()) {
-                    // Pre-cargar actividades de la asignación actual para la tabla
                     model.addAttribute("actividades",
                             actividadService.findByAsignacionId(asigs.get(0).getId()));
                     model.addAttribute("asignacionActual", asigs.get(0));
@@ -73,7 +67,6 @@ public class ActividadController {
         return "actividades/nueva";
     }
 
-    /** Guardar nueva actividad con asignacion correctamente enlazada */
     @PostMapping("/nueva")
     public String nueva(
             @RequestParam String titulo,
@@ -92,7 +85,6 @@ public class ActividadController {
         actividad.setCategoria(categoria);
         actividad.setFecha(LocalDate.parse(fecha));
 
-        // Buscar asignación: primero por parámetro, luego por el alumno logueado
         if (asignacionId != null) {
             asignacionService.findById(asignacionId)
                     .ifPresent(actividad::setAsignacion);
@@ -101,7 +93,6 @@ public class ActividadController {
                 var asigs = asignacionService.findByAlumnoId(u.getId());
                 if (!asigs.isEmpty()) {
                     actividad.setAsignacion(asigs.get(0));
-                    // Actualizar horas realizadas en la asignación
                     Asignacion asig = asigs.get(0);
                     asig.setHorasRealizadas(asig.getHorasRealizadas() + horas);
                     asignacionService.save(asig);
@@ -110,7 +101,30 @@ public class ActividadController {
         }
 
         actividadService.save(actividad);
-        model.addAttribute("mensajeExito", "Actividad registrada correctamente.");
+
+        // NOTIFICACIONES
+        if (auth != null) {
+            usuarioService.findByEmail(auth.getName()).ifPresent(alumno -> {
+                String texto = alumno.getNombre() + " " + alumno.getApellidos()
+                    + " ha registrado una nueva actividad: " + titulo;
+
+                usuarioService.findAll().stream()
+                    .filter(u -> u.getRol().equals("profesor"))
+                    .forEach(u -> notificacionService.crearNotificacion(
+                        u, "ACTIVIDAD", texto, "/alumnos/" + alumno.getId()));
+
+                usuarioService.findAll().stream()
+                    .filter(u -> u.getRol().equals("empresa"))
+                    .forEach(u -> notificacionService.crearNotificacion(
+                        u, "ACTIVIDAD", texto, "/empresas/alumnos/" + alumno.getId()));
+
+                usuarioService.findAll().stream()
+                    .filter(u -> u.getRol().equals("admin"))
+                    .forEach(u -> notificacionService.crearNotificacion(
+                        u, "ACTIVIDAD", texto, "/admin/dashboard"));
+            });
+        }
+
         return "redirect:/actividades/nueva?exito=true";
     }
 

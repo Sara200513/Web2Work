@@ -1,7 +1,9 @@
 package com.Web2Work.demo.controller;
 
 import com.Web2Work.demo.model.Mensaje;
+import com.Web2Work.demo.model.Usuario;
 import com.Web2Work.demo.service.MensajeService;
+import com.Web2Work.demo.service.NotificacionService;
 import com.Web2Work.demo.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -9,126 +11,181 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @Controller
 @RequestMapping("/mensajes")
 public class MensajeController {
 
-    @Autowired
-    private MensajeService mensajeService;
+    @Autowired private MensajeService      mensajeService;
+    @Autowired private UsuarioService      usuarioService;
+    @Autowired private NotificacionService notificacionService;
 
-    @Autowired
-    private UsuarioService usuarioService;
-
+    // ── Bandeja ──────────────────────────────────────────────────────────────
     @GetMapping
     public String bandeja(Model model, Authentication auth) {
-        // Mostrar sólo mensajes del usuario logueado (enviados y recibidos)
         if (auth != null) {
-            usuarioService.findByEmail(auth.getName()).ifPresent(u -> {
+            usuarioService.findByEmail(auth.getName()).ifPresentOrElse(u -> {
                 var recibidos = mensajeService.findByToUserId(u.getId());
                 var enviados  = mensajeService.findByFromUserId(u.getId());
+
+                // Auto-corregir mensajes sin conversacionId (mensajes anteriores)
+                recibidos.forEach(m -> asegurarConversacionId(m));
+                enviados.forEach(m  -> asegurarConversacionId(m));
+
                 model.addAttribute("mensajes", recibidos);
-                model.addAttribute("enviados", enviados);
-
-                if (auth.getAuthorities().stream()
-                        .anyMatch(a -> a.getAuthority().equals("ROLE_PROFESOR"))) {
-                    return; // se aplica el return de la lambda, la vista se elige abajo
-                }
+                model.addAttribute("enviados",  enviados);
+            }, () -> {
+                model.addAttribute("mensajes", List.of());
+                model.addAttribute("enviados",  List.of());
             });
+        } else {
+            model.addAttribute("mensajes", List.of());
+            model.addAttribute("enviados",  List.of());
         }
-
-        if (auth != null) {
-            if (auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_PROFESOR"))) {
-                return "mensajes/bandeja-profesor";
-            } else if (auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_EMPRESA"))) {
-                return "mensajes/bandeja-empresa";
-            } else if (auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-                return "mensajes/bandeja-admin";
-            }
-        }
-        return "mensajes/bandeja"; // alumno
+        return vistaSegunRol(auth,
+                "mensajes/bandeja",
+                "mensajes/bandeja-profesor",
+                "mensajes/bandeja-empresa",
+                "mensajes/bandeja-admin");
     }
 
+    // ── Nuevo (GET) ───────────────────────────────────────────────────────────
     @GetMapping("/nuevo")
     public String nuevoForm(Model model, Authentication auth) {
         model.addAttribute("mensaje", new Mensaje());
-        // No mostrar el propio usuario como destinatario
         if (auth != null) {
-            usuarioService.findByEmail(auth.getName()).ifPresent(u -> {
+            usuarioService.findByEmail(auth.getName()).ifPresentOrElse(u -> {
                 var todos = usuarioService.findAll();
                 todos.removeIf(us -> us.getId().equals(u.getId()));
                 model.addAttribute("usuarios", todos);
-            });
+            }, () -> model.addAttribute("usuarios", usuarioService.findAll()));
         } else {
             model.addAttribute("usuarios", usuarioService.findAll());
         }
-
-        // Devolver vista según rol
-        if (auth != null) {
-            if (auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_PROFESOR"))) {
-                return "mensajes/nuevo-profesor";
-            } else if (auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_EMPRESA"))) {
-                return "mensajes/nuevo-empresa";
-            } else if (auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-                return "mensajes/nuevo-admin";
-            }
-        }
-        return "mensajes/nuevo";
+        return vistaSegunRol(auth,
+                "mensajes/nuevo",
+                "mensajes/nuevo-profesor",
+                "mensajes/nuevo-empresa",
+                "mensajes/nuevo-admin");
     }
 
+    // ── Nuevo (POST) ──────────────────────────────────────────────────────────
     @PostMapping("/nuevo")
-    public String nuevo(
-            @RequestParam Long toUserId,
-            @RequestParam String asunto,
-            @RequestParam String cuerpo,
-            Authentication auth) {
-
+    public String nuevo(@RequestParam Long toUserId,
+                        @RequestParam String asunto,
+                        @RequestParam String cuerpo,
+                        Authentication auth) {
         if (auth == null) return "redirect:/login";
 
-        usuarioService.findByEmail(auth.getName()).ifPresent(fromUser -> {
+        usuarioService.findByEmail(auth.getName()).ifPresent(fromUser ->
             usuarioService.findById(toUserId).ifPresent(toUser -> {
-                Mensaje mensaje = new Mensaje();
-                mensaje.setFromUser(fromUser);
-                mensaje.setToUser(toUser);
-                mensaje.setAsunto(asunto);
-                mensaje.setCuerpo(cuerpo);
-                mensaje.setLeido(false);
-                mensajeService.save(mensaje);
-            });
-        });
+                String conversacionId = UUID.randomUUID().toString();
 
+                Mensaje m = new Mensaje();
+                m.setFromUser(fromUser);
+                m.setToUser(toUser);
+                m.setAsunto(asunto);
+                m.setCuerpo(cuerpo);
+                m.setLeido(false);
+                m.setConversacionId(conversacionId);
+                mensajeService.save(m);
+
+                notificacionService.crearNotificacion(
+                    toUser, "MENSAJE",
+                    fromUser.getNombre() + " " + fromUser.getApellidos()
+                        + " te ha enviado un mensaje: " + asunto,
+                    "/mensajes/conversacion/" + conversacionId);
+            })
+        );
         return "redirect:/mensajes";
     }
 
-    @GetMapping("/{id}")
-    public String ver(@PathVariable Long id, Model model, Authentication auth) {
-        mensajeService.findById(id).ifPresent(m -> {
-            // Marcar como leído si el destinatario es quien accede
-            if (auth != null && m.getToUser().getEmail().equals(auth.getName())) {
-                m.setLeido(true);
-                mensajeService.save(m);
-            }
-            model.addAttribute("mensaje", m);
+    // ── Ver conversación ──────────────────────────────────────────────────────
+    @GetMapping("/conversacion/{conversacionId}")
+    public String verConversacion(@PathVariable String conversacionId,
+                                   Model model, Authentication auth) {
+        var mensajes = mensajeService.findByConversacionId(conversacionId);
+
+        if (auth != null) {
+            usuarioService.findByEmail(auth.getName()).ifPresent(u ->
+                mensajes.forEach(m -> {
+                    if (m.getToUser().getId().equals(u.getId()) && !m.getLeido()) {
+                        m.setLeido(true);
+                        mensajeService.save(m);
+                    }
+                })
+            );
+        }
+
+        model.addAttribute("mensajes",       mensajes);
+        model.addAttribute("conversacionId", conversacionId);
+        model.addAttribute("asunto",
+            mensajes.isEmpty() ? "Conversación" : mensajes.get(0).getAsunto());
+
+        return vistaSegunRol(auth,
+                "mensajes/conversacion",
+                "mensajes/conversacion-profesor",
+                "mensajes/conversacion-empresa",
+                "mensajes/conversacion-admin");
+    }
+
+    // ── Responder ─────────────────────────────────────────────────────────────
+    @PostMapping("/responder")
+    public String responder(@RequestParam String conversacionId,
+                            @RequestParam String cuerpo,
+                            Authentication auth) {
+        if (auth == null) return "redirect:/login";
+
+        var mensajes = mensajeService.findByConversacionId(conversacionId);
+        if (mensajes.isEmpty()) return "redirect:/mensajes";
+
+        usuarioService.findByEmail(auth.getName()).ifPresent(fromUser -> {
+            Mensaje original = mensajes.get(0);
+            Usuario toUser   = original.getFromUser().getId().equals(fromUser.getId())
+                    ? original.getToUser()
+                    : original.getFromUser();
+
+            Mensaje respuesta = new Mensaje();
+            respuesta.setFromUser(fromUser);
+            respuesta.setToUser(toUser);
+            respuesta.setAsunto("Re: " + original.getAsunto());
+            respuesta.setCuerpo(cuerpo);
+            respuesta.setLeido(false);
+            respuesta.setConversacionId(conversacionId);
+            mensajeService.save(respuesta);
+
+            notificacionService.crearNotificacion(
+                toUser, "MENSAJE",
+                fromUser.getNombre() + " " + fromUser.getApellidos()
+                    + " ha respondido a: " + original.getAsunto(),
+                "/mensajes/conversacion/" + conversacionId);
         });
 
-        // Elegir vista por rol para que el sidebar sea correcto
-        if (auth != null) {
-            if (auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_PROFESOR"))) {
-                return "mensajes/detalle-profesor";
-            } else if (auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_EMPRESA"))) {
-                return "mensajes/detalle-empresa";
-            } else if (auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-                return "mensajes/detalle-admin";
+        return "redirect:/mensajes/conversacion/" + conversacionId;
+    }
+
+    // ── Asegurar que el mensaje tiene conversacionId ───────────────────────────
+    private void asegurarConversacionId(Mensaje m) {
+        if (m.getConversacionId() == null || m.getConversacionId().isBlank()) {
+            m.setConversacionId(UUID.randomUUID().toString());
+            mensajeService.save(m);
+        }
+    }
+
+    // ── Vista según rol ────────────────────────────────────────────────────────
+    private String vistaSegunRol(Authentication auth,
+                                  String alumno, String profesor,
+                                  String empresa, String admin) {
+        if (auth == null) return alumno;
+        for (var a : auth.getAuthorities()) {
+            switch (a.getAuthority()) {
+                case "ROLE_PROFESOR" -> { return profesor; }
+                case "ROLE_EMPRESA"  -> { return empresa;  }
+                case "ROLE_ADMIN"    -> { return admin;    }
             }
         }
-        return "mensajes/detalle";
+        return alumno;
     }
 }

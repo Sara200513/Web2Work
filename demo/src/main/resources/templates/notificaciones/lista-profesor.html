@@ -43,7 +43,7 @@
                         th:classappend="${!notificacion.leido} ? ' no-leida'"
                         class="notificacion-item">
                         <div class="notificacion-contenido">
-                            <span class="notificacion-tipo"
+                            <span th:class="'badge-notif badge-' + ${notificacion.tipo.toLowerCase()}"
                                   th:text="${notificacion.tipo}">Tipo</span>
                             <p th:text="${notificacion.texto}">Texto</p>
                             <span class="notificacion-fecha"
@@ -53,10 +53,17 @@
                             <a th:if="${notificacion.link != null}"
                                th:href="${notificacion.link}"
                                class="btn-teal btn-pequeño">Ver</a>
+                            <a th:href="@{/notificaciones/marcar-leida/{id}(id=${notificacion.id})}"
+                               class="btn-secundario btn-pequeño">
+                               Marcar leída
+                            </a>
                         </div>
                     </li>
-                    <li th:if="${#lists.isEmpty(notificaciones)}" class="sin-datos">
-                        No hay notificaciones.
+                    <li th:if="${#lists.isEmpty(notificaciones)}"
+                        class="notificacion-item">
+                        <div class="notificacion-contenido">
+                            <p class="sin-datos">No hay notificaciones.</p>
+                        </div>
                     </li>
                 </ul>
             </div>

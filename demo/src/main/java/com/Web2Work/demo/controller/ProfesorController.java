@@ -1,6 +1,5 @@
 package com.Web2Work.demo.controller;
 
-import com.Web2Work.demo.model.Profesor;
 import com.Web2Work.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,25 +10,25 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/profesores")
 public class ProfesorController {
 
-    @Autowired
-    private ProfesorService profesorService;
-
-    @Autowired
-    private AlumnoService alumnoService;
-
-    @Autowired
-    private ConvenioFEService convenioFEService;
-
-    @Autowired
-    private AsignacionService asignacionService;
-
-    @Autowired
-    private EvaluacionService evaluacionService;
+    @Autowired private ProfesorService    profesorService;
+    @Autowired private AlumnoService      alumnoService;
+    @Autowired private ConvenioFEService  convenioFEService;
+    @Autowired private AsignacionService  asignacionService;
+    @Autowired private EvaluacionService  evaluacionService;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        model.addAttribute("alumnos", alumnoService.findAll());
-        model.addAttribute("convenios", convenioFEService.findAll());
+        var alumnos      = alumnoService.findAll();
+        var convenios    = convenioFEService.findAll();
+        var asignaciones = asignacionService.findAll();
+
+        model.addAttribute("alumnos",               alumnos);
+        model.addAttribute("convenios",             convenios);
+        model.addAttribute("asignaciones",          asignaciones);
+        model.addAttribute("totalAlumnos",          alumnos.size());
+        model.addAttribute("totalConvenios",        convenios.size());
+        model.addAttribute("evaluacionesPendientes", 0);
+        model.addAttribute("actividadesNuevas",     0);
         return "profesores/dashboard";
     }
 

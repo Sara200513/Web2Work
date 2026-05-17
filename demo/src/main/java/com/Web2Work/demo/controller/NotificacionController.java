@@ -38,4 +38,14 @@ public class NotificacionController {
         model.addAttribute("notificaciones", notificacionService.findByUsuarioId(id));
         return "notificaciones/lista";
     }
+    
+    @GetMapping("/marcar-leida/{id}")
+    public String marcarLeida(@PathVariable Long id,
+                               Authentication auth) {
+        notificacionService.findById(id).ifPresent(n -> {
+            n.setLeido(true);
+            notificacionService.save(n);
+        });
+        return "redirect:/notificaciones";
+    }
 }

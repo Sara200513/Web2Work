@@ -11,18 +11,21 @@
     <div class="sidebar">
         <div class="sidebar-logo"><img src="/imagenes/Imagen1.jpeg" alt="Web2Work"></div>
         <nav class="sidebar-nav"><ul>
-            <li><a th:href="@{/profesores/dashboard}">Dashboard</a></li>
-            <li><a th:href="@{/convenios}">Convenios FE</a></li>
-            <li><a th:href="@{/profesores/alumnos}">Alumnos</a></li>
-            <li><a th:href="@{/busqueda}">Búsqueda</a></li>
-            <li class="activo"><a th:href="@{/mensajes}">Mensajería</a></li>
-            <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
-            <li><a th:href="@{/perfil}">Mi perfil</a></li>
-        </ul></nav>
+		    <li><a th:href="@{/profesores/dashboard}">Dashboard</a></li>
+		    <li><a th:href="@{/convenios}">Convenios FE</a></li>
+		    <li><a th:href="@{/profesores/alumnos}">Alumnos</a></li>
+		    <li><a th:href="@{/busqueda}">Búsqueda</a></li>
+		    <li class="activo"><a th:href="@{/mensajes}">Mensajería</a></li>
+		    <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+		    <li><a th:href="@{/perfil}">Mi perfil</a></li>
+		</ul></nav>
         <div class="sidebar-footer"><a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a></div>
     </div>
     <div class="contenido">
-        <div class="cabecera"><h1>Conversación</h1><div class="usuario-info"><span>Profesor</span></div></div>
+        <div class="cabecera">
+            <h1>Conversación</h1>
+            <div class="usuario-info"><span>Profesor</span></div>
+        </div>
         <div class="contenido-inner">
             <div class="mensajeria-contenedor">
                 <div class="conversaciones-panel">
@@ -54,7 +57,7 @@
                         <form th:action="@{/mensajes/nuevo}" method="post">
                             <input type="hidden" name="toUserId" th:value="${mensaje.fromUser.id}">
                             <input type="hidden" name="asunto" th:value="'Re: ' + ${mensaje.asunto}">
-                            <textarea name="cuerpo" placeholder="Escribe una respuesta..."></textarea>
+                            <textarea name="cuerpo" placeholder="Escribe una respuesta..." required></textarea>
                             <button type="submit" class="btn-primario">Responder</button>
                         </form>
                     </div>
@@ -63,4 +66,5 @@
         </div>
     </div>
     <script th:src="@{/js/scripts.js}"></script>
-</body></html>
+</body>
+</html>
