@@ -1,10 +1,8 @@
 package com.Web2Work.demo.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 
 @Entity
 @Table(name = "actividades")
@@ -15,7 +13,7 @@ public class Actividad {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "asignacion_id", nullable = false)
+    @JoinColumn(name = "asignacion_id")
     private Asignacion asignacion;
 
     @Column(nullable = false)
@@ -33,7 +31,7 @@ public class Actividad {
     @Column(nullable = false)
     private String categoria;
 
-    @Column(nullable = false)
+    // nullable: no se muestra en el formulario, se calcula automáticamente
     private String tipoActividad;
 
     @Column(nullable = false)
@@ -42,9 +40,12 @@ public class Actividad {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        if (tipoActividad == null || tipoActividad.isEmpty()) {
+            tipoActividad = categoria != null ? categoria : "general";
+        }
     }
-    
- // GETTERS
+
+    // GETTERS
     public Long getId() { return id; }
     public Asignacion getAsignacion() { return asignacion; }
     public LocalDate getFecha() { return fecha; }

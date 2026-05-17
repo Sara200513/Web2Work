@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Web2Work - Nuevo mensaje</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo"><img src="/imagenes/Imagen1.jpeg" alt="Web2Work"></div>
+        <nav class="sidebar-nav"><ul>
+            <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+            <li><a th:href="@{/admin/roles}">Roles</a></li>
+            <li><a th:href="@{/admin/config}">Config. sistema</a></li>
+            <li class="activo"><a th:href="@{/mensajes}">Mensajería</a></li>
+            <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+            <li><a th:href="@{/admin/informes}">Informes</a></li>
+        </ul></nav>
+        <div class="sidebar-footer"><a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a></div>
+    </div>
+    <div class="contenido">
+        <div class="cabecera"><h1>Nuevo mensaje</h1><div class="usuario-info"><span>Admin</span></div></div>
+        <div class="contenido-inner">
+            <div class="formulario">
+                <h2>Redactar mensaje</h2>
+                <form th:action="@{/mensajes/nuevo}" method="post">
+                    <div class="form-grupo">
+                        <label>DESTINATARIO *</label>
+                        <select name="toUserId" required>
+                            <option value="">Seleccionar destinatario...</option>
+                            <option th:each="u : ${usuarios}" th:value="${u.id}"
+                                    th:text="${u.nombre + ' ' + u.apellidos + ' (' + u.rol + ')'}"></option>
+                        </select>
+                    </div>
+                    <div class="form-grupo"><label>ASUNTO *</label>
+                        <input type="text" name="asunto" placeholder="Asunto del mensaje" required></div>
+                    <div class="form-grupo"><label>MENSAJE *</label>
+                        <textarea name="cuerpo" placeholder="Escribe tu mensaje aquí..." required></textarea></div>
+                    <div class="form-acciones">
+                        <button type="submit" class="btn-primario">Enviar</button>
+                        <a th:href="@{/mensajes}" class="btn-secundario">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/scripts.js}"></script>
+</body></html>

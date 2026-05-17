@@ -1,9 +1,7 @@
 package com.Web2Work.demo.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.time.LocalDateTime;
-
 
 @Entity
 @Table(name = "evidencias")
@@ -14,30 +12,21 @@ public class Evidencia {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "actividad_id", nullable = false)
+    @JoinColumn(name = "actividad_id")
     private Actividad actividad;
 
     @ManyToOne
-    @JoinColumn(name = "asignacion_id", nullable = false)
+    @JoinColumn(name = "asignacion_id")
     private Asignacion asignacion;
 
     @ManyToOne
-    @JoinColumn(name = "uploaded_by", nullable = false)
+    @JoinColumn(name = "uploaded_by")
     private Usuario uploadedBy;
 
-    @Column(nullable = false)
     private String nombreArchivo;
-
-    @Column(nullable = false)
     private String filePath;
-
-    @Column(nullable = false)
     private String fileType;
-
-    @Column(nullable = false)
     private String descripcion;
-
-    @Column(nullable = false)
     private Long tamaño;
 
     @Column(nullable = false)
@@ -46,9 +35,14 @@ public class Evidencia {
     @PrePersist
     protected void onCreate() {
         fechaSubida = LocalDateTime.now();
+        if (descripcion == null) descripcion = "";
+        if (nombreArchivo == null) nombreArchivo = "";
+        if (filePath == null) filePath = "";
+        if (fileType == null) fileType = "";
+        if (tamaño == null) tamaño = 0L;
     }
-    
- // GETTERS
+
+    // GETTERS
     public Long getId() { return id; }
     public Actividad getActividad() { return actividad; }
     public Asignacion getAsignacion() { return asignacion; }
@@ -71,4 +65,8 @@ public class Evidencia {
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
     public void setTamaño(Long tamaño) { this.tamaño = tamaño; }
     public void setFechaSubida(LocalDateTime fechaSubida) { this.fechaSubida = fechaSubida; }
+    
+    // Alias para compatibilidad
+    public void setTipoArchivo(String tipo) { this.fileType = tipo; }
+    public void setUsuario(Usuario u) { this.uploadedBy = u; }
 }

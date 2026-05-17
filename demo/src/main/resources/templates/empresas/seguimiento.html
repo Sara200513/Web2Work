@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Web2Work - Seguimiento alumno</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo"><img src="/imagenes/Imagen1.jpeg" alt="Web2Work"></div>
+        <nav class="sidebar-nav"><ul>
+            <li><a th:href="@{/empresas/dashboard}">Dashboard</a></li>
+            <li class="activo"><a th:href="@{/empresas/alumnos}">Alumnos</a></li>
+            <li><a th:href="@{/convenios}">Convenios</a></li>
+            <li><a th:href="@{/mensajes}">Mensajería</a></li>
+            <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+            <li><a th:href="@{/perfil}">Mi perfil</a></li>
+        </ul></nav>
+        <div class="sidebar-footer"><a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a></div>
+    </div>
+    <div class="contenido">
+        <div class="cabecera">
+            <h1 th:text="${alumno != null ? alumno.nombre + ' ' + alumno.apellidos : 'Alumno'}">Alumno</h1>
+            <div class="usuario-info"><span>Empresa</span></div>
+        </div>
+        <div class="contenido-inner">
+            <div class="tabla-contenedor">
+                <h2>Asignaciones</h2>
+                <table>
+                    <thead><tr><th>Empresa</th><th>Fecha inicio</th><th>Horas</th><th>Estado</th></tr></thead>
+                    <tbody>
+                        <tr th:each="asig : ${asignaciones}">
+                            <td th:text="${asig.convenio.empresa.nombreEmpresa}">Empresa</td>
+                            <td th:text="${asig.fechaAsignacion}">Fecha</td>
+                            <td th:text="${asig.horasRealizadas}">0</td>
+                            <td><span th:class="'badge badge-' + ${asig.estadoAsignacion}"
+                                      th:text="${asig.estadoAsignacion}">Estado</span></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(asignaciones)}">
+                            <td colspan="4" class="sin-datos">Sin asignaciones.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tabla-contenedor">
+                <h2>Evaluaciones</h2>
+                <table>
+                    <thead><tr><th>Tipo</th><th>Nota</th><th>Fecha</th><th>Comentario</th></tr></thead>
+                    <tbody>
+                        <tr th:each="eval : ${evaluaciones}">
+                            <td th:text="${eval.tipo}">Tipo</td>
+                            <td th:text="${eval.notaFinal}">0</td>
+                            <td th:text="${eval.createdAt}">Fecha</td>
+                            <td th:text="${eval.comentarios}">-</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(evaluaciones)}">
+                            <td colspan="4" class="sin-datos">Sin evaluaciones.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-acciones">
+                <a th:href="@{/evaluaciones/nueva}" class="btn-primario">Nueva evaluación</a>
+                <a th:href="@{/comentarios/nuevo}" class="btn-secundario">Añadir observación</a>
+                <a th:href="@{/empresas/alumnos}" class="btn-secundario">Volver</a>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/scripts.js}"></script>
+</body></html>

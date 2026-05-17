@@ -11,22 +11,26 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin")
 public class AdministradorController {
 
-    @Autowired
-    private UsuarioService usuarioService;
-
-    @Autowired
-    private AdministradorService administradorService;
-
-    @Autowired
-    private ConvenioFEService convenioFEService;
-
-    @Autowired
-    private NotificacionService notificacionService;
+    @Autowired private UsuarioService usuarioService;
+    @Autowired private AdministradorService administradorService;
+    @Autowired private ConvenioFEService convenioFEService;
+    @Autowired private NotificacionService notificacionService;
+    @Autowired private InformeService informeService;
+    @Autowired private AlumnoService alumnoService;
+    @Autowired private EvaluacionService evaluacionService;
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        model.addAttribute("usuarios", usuarioService.findAll());
-        model.addAttribute("convenios", convenioFEService.findAll());
+        var usuarios  = usuarioService.findAll();
+        var convenios = convenioFEService.findAll();
+        model.addAttribute("usuarios", usuarios);
+        model.addAttribute("convenios", convenios);
+        // Tarjetas de resumen
+        model.addAttribute("totalUsuarios", usuarios.size());
+        model.addAttribute("totalConvenios", convenios.size());
+        model.addAttribute("alumnosEnPracticas",
+            alumnoService.findAll().size());
+        model.addAttribute("notificacionesHoy", 0);
         return "admin/dashboard";
     }
 
@@ -44,7 +48,15 @@ public class AdministradorController {
 
     @PostMapping("/usuarios/editar/{id}")
     public String editarUsuario(@PathVariable Long id, @ModelAttribute Usuario usuario) {
-        usuarioService.save(usuario);
+        usuarioService.findById(id).ifPresent(u -> {
+            u.setNombre(usuario.getNombre());
+            u.setApellidos(usuario.getApellidos());
+            u.setEmail(usuario.getEmail());
+            u.setTelefono(usuario.getTelefono());
+            u.setRol(usuario.getRol());
+            u.setCuentaActiva(usuario.getCuentaActiva());
+            usuarioService.save(u);
+        });
         return "redirect:/admin/usuarios";
     }
 
@@ -53,17 +65,7 @@ public class AdministradorController {
         usuarioService.deleteById(id);
         return "redirect:/admin/usuarios";
     }
-    
-    @Autowired
-    private InformeService informeService;
 
-    @Autowired
-    private AlumnoService alumnoService;
-
-    @Autowired
-    private EvaluacionService evaluacionService;
-
-    // INFORMES
     @GetMapping("/informes")
     public String informes(Model model) {
         model.addAttribute("resumen", informeService.resumenGlobal());
@@ -80,9 +82,7 @@ public class AdministradorController {
     }
 
     @GetMapping("/informes/evaluaciones")
-    public String informeEvaluaciones(
-            @RequestParam(required = false) String tipo,
-            Model model) {
+    public String informeEvaluaciones(@RequestParam(required = false) String tipo, Model model) {
         model.addAttribute("evaluaciones", informeService.evaluacionesEmitidas(tipo));
         model.addAttribute("tipo", tipo);
         return "admin/informe-evaluaciones";
@@ -94,13 +94,9 @@ public class AdministradorController {
         return "admin/informe-progreso";
     }
 
-    // CONFIGURACIÓN DEL SISTEMA
     @GetMapping("/config")
-    public String config(Model model) {
-        return "admin/config";
-    }
+    public String config(Model model) { return "admin/config"; }
 
-    // GESTIÓN DE ROLES
     @GetMapping("/roles")
     public String roles(Model model) {
         model.addAttribute("usuarios", usuarioService.findAll());
@@ -108,15 +104,36 @@ public class AdministradorController {
     }
 
     @PostMapping("/roles/cambiar")
-    public String cambiarRol(
-            @RequestParam Long usuarioId,
-            @RequestParam String nuevoRol,
-            Model model) {
+    public String cambiarRol(@RequestParam Long usuarioId,
+                             @RequestParam String nuevoRol) {
         usuarioService.findById(usuarioId).ifPresent(u -> {
             u.setRol(nuevoRol);
             usuarioService.save(u);
         });
-        model.addAttribute("mensajeExito", "Rol actualizado correctamente.");
-        return "redirect:/admin/roles";
+        return "redirect:/admin/roles?exito=true";
     }
+
+	public AdministradorService getAdministradorService() {
+		return administradorService;
+	}
+
+	public void setAdministradorService(AdministradorService administradorService) {
+		this.administradorService = administradorService;
+	}
+
+	public NotificacionService getNotificacionService() {
+		return notificacionService;
+	}
+
+	public void setNotificacionService(NotificacionService notificacionService) {
+		this.notificacionService = notificacionService;
+	}
+
+	public EvaluacionService getEvaluacionService() {
+		return evaluacionService;
+	}
+
+	public void setEvaluacionService(EvaluacionService evaluacionService) {
+		this.evaluacionService = evaluacionService;
+	}
 }

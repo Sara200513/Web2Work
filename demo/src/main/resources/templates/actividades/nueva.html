@@ -9,22 +9,16 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-logo">
-            <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
-        </div>
-        <nav class="sidebar-nav">
-            <ul>
-                <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
-                <li class="activo"><a th:href="@{/actividades/nueva}">Mis prácticas</a></li>
-                <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
-                <li><a th:href="@{/mensajes}">Mensajería</a></li>
-                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
-                <li><a th:href="@{/usuarios/perfil}">Mi perfil</a></li>
-            </ul>
-        </nav>
-        <div class="sidebar-footer">
-            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
-        </div>
+        <div class="sidebar-logo"><img src="/imagenes/Imagen1.jpeg" alt="Web2Work"></div>
+        <nav class="sidebar-nav"><ul>
+            <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
+            <li class="activo"><a th:href="@{/actividades/nueva}">Mis prácticas</a></li>
+            <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+            <li><a th:href="@{/mensajes}">Mensajería</a></li>
+            <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+            <li><a th:href="@{/perfil}">Mi perfil</a></li>
+        </ul></nav>
+        <div class="sidebar-footer"><a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a></div>
     </div>
 
     <div class="contenido">
@@ -35,9 +29,22 @@
 
         <div class="contenido-inner">
 
-            <!-- INFO CONVENIO -->
-            <div class="alerta alerta-info">
-                INFO DEL CONVENIO — Empresa · Tutor · Fechas · Horas totales
+            <!-- Mensaje éxito -->
+            <div th:if="${param.exito}" class="alerta alerta-exito">
+                ✅ Actividad registrada correctamente.
+            </div>
+
+            <!-- Aviso si no tiene asignación -->
+            <div th:if="${asignacionActual == null}" class="alerta alerta-info">
+                ⚠️ Aún no tienes una empresa asignada. Contacta con tu tutor para registrar actividades.
+            </div>
+
+            <!-- Info del convenio actual -->
+            <div th:if="${asignacionActual != null}" class="alerta alerta-info">
+                <strong>Empresa:</strong> <span th:text="${asignacionActual.convenio.empresa.nombreEmpresa}">Empresa</span> &nbsp;|&nbsp;
+                <strong>Tutor:</strong> <span th:text="${asignacionActual.convenio.profesor.nombre}">Tutor</span> &nbsp;|&nbsp;
+                <strong>Horas realizadas:</strong> <span th:text="${asignacionActual.horasRealizadas}">0</span> /
+                <span th:text="${asignacionActual.convenio.horasTotales}">0</span>
             </div>
 
             <div class="fila-dos-columnas">
@@ -47,25 +54,26 @@
                     <h2>Registrar actividad</h2>
                     <div class="info-empresa">
                         <form th:action="@{/actividades/nueva}" method="post">
+                            <!-- Asignación oculta si existe -->
+                            <input th:if="${asignacionActual != null}" type="hidden"
+                                   name="asignacionId" th:value="${asignacionActual.id}">
+
                             <div class="form-grupo">
                                 <label>FECHA *</label>
                                 <input type="date" name="fecha" required>
                             </div>
                             <div class="form-grupo">
                                 <label>TÍTULO DE LA ACTIVIDAD *</label>
-                                <input type="text" name="titulo"
-                                       placeholder="Título de la actividad" required>
+                                <input type="text" name="titulo" placeholder="Título de la actividad" required>
                             </div>
                             <div class="form-grupo">
                                 <label>DESCRIPCIÓN *</label>
-                                <textarea name="descripcion"
-                                          placeholder="Describe la actividad realizada..." required></textarea>
+                                <textarea name="descripcion" placeholder="Describe la actividad realizada..." required></textarea>
                             </div>
                             <div class="fila-dos-columnas">
                                 <div class="form-grupo">
                                     <label>HORAS *</label>
-                                    <input type="number" name="horas" min="1" max="12"
-                                           placeholder="0" required>
+                                    <input type="number" name="horas" min="1" max="12" placeholder="0" required>
                                 </div>
                                 <div class="form-grupo">
                                     <label>CATEGORÍA *</label>
@@ -81,7 +89,8 @@
                                 </div>
                             </div>
                             <div class="form-acciones">
-                                <button type="submit" class="btn-primario">Guardar</button>
+                                <button type="submit" class="btn-primario"
+                                        th:disabled="${asignacionActual == null}">Guardar</button>
                                 <a th:href="@{/alumnos/dashboard}" class="btn-secundario">Cancelar</a>
                             </div>
                         </form>
@@ -92,8 +101,7 @@
                 <div class="tabla-contenedor">
                     <h2>Subir evidencia</h2>
                     <div class="info-empresa">
-                        <form th:action="@{/evidencias/nueva}" method="post"
-                              enctype="multipart/form-data">
+                        <form th:action="@{/evidencias/nueva}" method="post" enctype="multipart/form-data">
                             <div class="form-grupo">
                                 <label>ACTIVIDAD ASOCIADA *</label>
                                 <select name="actividadId" required>
@@ -105,8 +113,7 @@
                             </div>
                             <div class="form-grupo">
                                 <label>DESCRIPCIÓN</label>
-                                <textarea name="descripcion"
-                                          placeholder="Descripción del archivo..."></textarea>
+                                <textarea name="descripcion" placeholder="Descripción del archivo..."></textarea>
                             </div>
                             <div class="form-grupo">
                                 <label>ARCHIVO *</label>
@@ -125,9 +132,45 @@
                 </div>
 
             </div>
+
+            <!-- TABLA ACTIVIDADES REGISTRADAS -->
+            <div class="tabla-contenedor">
+                <h2>Actividades registradas</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Título</th>
+                            <th>Horas</th>
+                            <th>Categoría</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="act : ${actividades}">
+                            <td th:text="${act.fecha}">Fecha</td>
+                            <td th:text="${act.titulo}">Título</td>
+                            <td th:text="${act.horas}">0</td>
+                            <td th:text="${act.categoria}">Categoría</td>
+                            <td>
+                                <a th:href="@{/actividades/{id}(id=${act.id})}"
+                                   class="btn-teal btn-pequeño">Ver</a>
+                                <a th:href="@{/actividades/editar/{id}(id=${act.id})}"
+                                   class="btn-secundario btn-pequeño">Editar</a>
+                                <a th:href="@{/actividades/eliminar/{id}(id=${act.id})}"
+                                   class="btn-secundario btn-pequeño"
+                                   onclick="return confirm('¿Eliminar actividad?')">Eliminar</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(actividades)}">
+                            <td colspan="5" class="sin-datos">No hay actividades registradas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
-
     <script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>

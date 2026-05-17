@@ -15,9 +15,9 @@
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
-                <li><a th:href="@{/actividades/nueva}">Mis prácticas</a></li>
-                <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+                <li><a th:href="@{/empresas/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/empresas/alumnos}">Alumnos</a></li>
+                <li><a th:href="@{/convenios}">Convenios</a></li>
                 <li class="activo"><a th:href="@{/mensajes}">Mensajería</a></li>
                 <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
                 <li><a th:href="@{/perfil}">Mi perfil</a></li>
@@ -31,13 +31,11 @@
     <div class="contenido">
         <div class="cabecera">
             <h1>Mensajería</h1>
-            <div class="usuario-info"><span>Alumno</span></div>
+            <div class="usuario-info"><span>Empresa</span></div>
         </div>
 
         <div class="contenido-inner">
             <div class="mensajeria-contenedor">
-
-                <!-- LISTA CONVERSACIONES -->
                 <div class="conversaciones-panel">
                     <div class="conversaciones-cabecera">
                         <h3>Conversaciones</h3>
@@ -52,9 +50,8 @@
                                       th:text="${mensaje.fromUser.nombre + ' ' + mensaje.fromUser.apellidos}">
                                     Usuario
                                 </span>
-                                <span class="conv-preview"
-                                      th:text="${mensaje.cuerpo}">
-                                    Último mensaje...
+                                <span class="conv-preview" th:text="${mensaje.cuerpo}">
+                                    Mensaje...
                                 </span>
                             </a>
                         </li>
@@ -63,18 +60,14 @@
                         </li>
                     </ul>
                 </div>
-
-                <!-- PANEL MENSAJE -->
                 <div class="mensaje-panel">
                     <div class="mensaje-vacio">
                         <p>Selecciona una conversación para ver los mensajes</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-
     <script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>

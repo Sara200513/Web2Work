@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web2Work - Evaluaciones</title>
+    <title>Web2Work - Alumnos</title>
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
@@ -16,7 +16,8 @@
             <ul>
                 <li><a th:href="@{/profesores/dashboard}">Dashboard</a></li>
                 <li><a th:href="@{/convenios}">Convenios FE</a></li>
-                <li><a th:href="@{/alumnos}">Alumnos</a></li>
+                <li class="activo"><a th:href="@{/profesores/alumnos}">Alumnos</a></li>
+                <li><a th:href="@{/busqueda}">Búsqueda</a></li>
                 <li><a th:href="@{/mensajes}">Mensajería</a></li>
                 <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
                 <li><a th:href="@{/perfil}">Mi perfil</a></li>
@@ -29,49 +30,54 @@
 
     <div class="contenido">
         <div class="cabecera">
-            <h1>Evaluaciones</h1>
+            <h1>Listado de alumnos</h1>
             <div class="usuario-info"><span>Profesor</span></div>
         </div>
 
         <div class="contenido-inner">
             <div class="tabla-contenedor">
-                <h2>Listado de evaluaciones</h2>
+                <h2>Alumnos</h2>
                 <div class="tabla-acciones">
-                    <a th:href="@{/evaluaciones/nueva}" class="btn-primario">+ Nueva evaluación</a>
+                    <input type="text" id="buscadorAlumnos"
+                           placeholder="Buscar alumno..."
+                           onkeyup="filtrarAlumnos()" class="input-busqueda">
+                    <a th:href="@{/asignaciones/nueva}" class="btn-primario">
+                        + Asignar alumno
+                    </a>
                 </div>
-                <table>
+                <table id="tablaAlumnos">
                     <thead>
                         <tr>
-                            <th>Alumno</th>
-                            <th>Empresa</th>
-                            <th>Tipo</th>
-                            <th>Nota</th>
-                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>DNI</th>
+                            <th>Curso</th>
+                            <th>Grupo</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="evaluacion : ${evaluaciones}">
-                            <td th:text="${evaluacion.asignacion.alumno.nombre + ' ' +
-                                         evaluacion.asignacion.alumno.apellidos}">Alumno</td>
-                            <td th:text="${evaluacion.asignacion.convenio.empresa.nombreEmpresa}">Empresa</td>
-                            <td th:text="${evaluacion.tipo}">Tipo</td>
-                            <td th:text="${evaluacion.notaFinal}">0</td>
-                            <td th:text="${evaluacion.createdAt}">Fecha</td>
+                        <tr th:each="alumno : ${alumnos}">
+                            <td th:text="${alumno.nombre + ' ' + alumno.apellidos}">Nombre</td>
+                            <td th:text="${alumno.dni}">DNI</td>
+                            <td th:text="${alumno.curso}">Curso</td>
+                            <td th:text="${alumno.grupo}">Grupo</td>
                             <td>
-                                <a th:href="@{/evaluaciones/{id}(id=${evaluacion.id})}"
+                                <a th:href="@{/profesores/alumnos/{id}(id=${alumno.id})}"
                                    class="btn-teal btn-pequeño">Ver</a>
+                                <a th:href="@{/evaluaciones/nueva}"
+                                   class="btn-secundario btn-pequeño">Evaluar</a>
                             </td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(evaluaciones)}">
-                            <td colspan="6" class="sin-datos">No hay evaluaciones registradas.</td>
+                        <tr th:if="${#lists.isEmpty(alumnos)}">
+                            <td colspan="5" class="sin-datos">
+                                No hay alumnos registrados.
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
     <script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>

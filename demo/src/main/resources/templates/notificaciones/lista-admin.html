@@ -6,6 +6,7 @@
     <title>Web2Work - Notificaciones</title>
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/mensajeria.css}">
 </head>
 <body>
     <div class="sidebar">
@@ -14,12 +15,13 @@
         </div>
         <nav class="sidebar-nav">
             <ul>
-                <li><a th:href="@{/alumnos/dashboard}">Dashboard</a></li>
-                <li><a th:href="@{/actividades/nueva}">Mis prácticas</a></li>
-                <li><a th:href="@{/alumnos/progreso}">Mi progreso</a></li>
+                <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+                <li><a th:href="@{/admin/roles}">Roles</a></li>
+                <li><a th:href="@{/admin/config}">Config. sistema</a></li>
                 <li><a th:href="@{/mensajes}">Mensajería</a></li>
                 <li class="activo"><a th:href="@{/notificaciones}">Notificaciones</a></li>
-                <li><a th:href="@{/perfil}">Mi perfil</a></li>
+                <li><a th:href="@{/admin/informes}">Informes</a></li>
             </ul>
         </nav>
         <div class="sidebar-footer">
@@ -30,7 +32,7 @@
     <div class="contenido">
         <div class="cabecera">
             <h1>Notificaciones</h1>
-            <div class="usuario-info"><span>Alumno</span></div>
+            <div class="usuario-info"><span>Admin</span></div>
         </div>
 
         <div class="contenido-inner">
@@ -43,7 +45,7 @@
                         <div class="notificacion-contenido">
                             <span class="notificacion-tipo"
                                   th:text="${notificacion.tipo}">Tipo</span>
-                            <p th:text="${notificacion.texto}">Texto notificación</p>
+                            <p th:text="${notificacion.texto}">Texto</p>
                             <span class="notificacion-fecha"
                                   th:text="${notificacion.createdAt}">Fecha</span>
                         </div>
@@ -60,7 +62,6 @@
             </div>
         </div>
     </div>
-
     <script th:src="@{/js/scripts.js}"></script>
 </body>
 </html>
