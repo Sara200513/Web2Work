@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web2Work - Nuevo usuario</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo"><img src="/imagenes/Imagen1.jpeg" alt="Web2Work"></div>
+        <nav class="sidebar-nav"><ul>
+            <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+            <li class="activo"><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+            <li><a th:href="@{/admin/roles}">Roles</a></li>
+            <li><a th:href="@{/mensajes}">Mensajería</a></li>
+            <li><a th:href="@{/admin/config}">Config. sistema</a></li>
+            <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+            <li><a th:href="@{/admin/informes}">Informes</a></li>
+        </ul></nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <div class="contenido">
+        <div class="cabecera">
+            <h1>Nuevo usuario</h1>
+            <div class="usuario-info"><span>Admin</span></div>
+        </div>
+
+        <div class="contenido-inner">
+
+            <div th:if="${mensajeError}" class="alerta alerta-error"
+                 th:text="${mensajeError}"></div>
+
+            <div class="tabla-contenedor" style="max-width: 620px;">
+                <h2>Crear cuenta</h2>
+                <div class="info-empresa">
+                    <form th:action="@{/admin/usuarios/nuevo}" method="post">
+
+                        <p class="seccion-titulo">Datos personales</p>
+                        <div class="form-fila">
+                            <div class="form-grupo">
+                                <label>Nombre *</label>
+                                <input type="text" name="nombre" required placeholder="Nombre">
+                            </div>
+                            <div class="form-grupo">
+                                <label>Apellidos *</label>
+                                <input type="text" name="apellidos" required placeholder="Apellidos">
+                            </div>
+                        </div>
+                        <div class="form-fila">
+                            <div class="form-grupo">
+                                <label>DNI *</label>
+                                <input type="text" name="dni" required placeholder="12345678A">
+                            </div>
+                            <div class="form-grupo">
+                                <label>Teléfono *</label>
+                                <input type="tel" name="telefono" required placeholder="600000000">
+                            </div>
+                        </div>
+                        <div class="form-grupo">
+                            <label>Email *</label>
+                            <input type="email" name="email" required placeholder="correo@ejemplo.com">
+                        </div>
+
+                        <p class="seccion-titulo">Acceso y rol</p>
+                        <div class="form-fila">
+                            <div class="form-grupo">
+                                <label>Contraseña *</label>
+                                <input type="password" name="password" required placeholder="••••••••">
+                            </div>
+                            <div class="form-grupo">
+                                <label>Rol *</label>
+                                <select name="rol" id="selectRol" onchange="mostrarCampos()" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="alumno">Alumno</option>
+                                    <option value="profesor">Profesor</option>
+                                    <option value="empresa">Empresa</option>
+                                    <option value="admin">Administrador</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Alumno -->
+                        <div id="campos-alumno" class="campos-dinamicos">
+                            <p class="seccion-titulo">Datos del alumno</p>
+                            <div class="form-fila">
+                                <div class="form-grupo">
+                                    <label>Curso</label>
+                                    <input type="text" name="curso" placeholder="2 DAW">
+                                </div>
+                                <div class="form-grupo">
+                                    <label>Grupo</label>
+                                    <input type="text" name="grupo" placeholder="A">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profesor -->
+                        <div id="campos-profesor" class="campos-dinamicos">
+                            <p class="seccion-titulo">Datos del profesor</p>
+                            <div class="form-fila">
+                                <div class="form-grupo">
+                                    <label>Departamento</label>
+                                    <input type="text" name="departamento" placeholder="Informática">
+                                </div>
+                                <div class="form-grupo">
+                                    <label>Especialidad</label>
+                                    <input type="text" name="especialidad" placeholder="Desarrollo Web">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Empresa -->
+                        <div id="campos-empresa" class="campos-dinamicos">
+                            <p class="seccion-titulo">Datos de la empresa</p>
+                            <div class="form-fila">
+                                <div class="form-grupo">
+                                    <label>Nombre empresa</label>
+                                    <input type="text" name="nombreEmpresa" placeholder="Empresa S.L.">
+                                </div>
+                                <div class="form-grupo">
+                                    <label>CIF</label>
+                                    <input type="text" name="cif" placeholder="B12345678">
+                                </div>
+                            </div>
+                            <div class="form-fila">
+                                <div class="form-grupo">
+                                    <label>Razón social</label>
+                                    <input type="text" name="razonSocial" placeholder="Razón social">
+                                </div>
+                                <div class="form-grupo">
+                                    <label>Sector</label>
+                                    <input type="text" name="sector" placeholder="Tecnología">
+                                </div>
+                            </div>
+                            <div class="form-grupo">
+                                <label>Dirección</label>
+                                <input type="text" name="direccion" placeholder="Calle, número, ciudad">
+                            </div>
+                            <div class="form-fila">
+                                <div class="form-grupo">
+                                    <label>Nombre contacto</label>
+                                    <input type="text" name="contactoNombre" placeholder="Tutor de empresa">
+                                </div>
+                                <div class="form-grupo">
+                                    <label>Teléfono contacto</label>
+                                    <input type="tel" name="contactoTelefono" placeholder="600000000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Admin -->
+                        <div id="campos-admin" class="campos-dinamicos">
+                            <p class="seccion-titulo">Datos del administrador</p>
+                            <div class="form-grupo">
+                                <label>Departamento</label>
+                                <input type="text" name="departamento" placeholder="TI">
+                            </div>
+                        </div>
+
+                        <div class="form-acciones">
+                            <button type="submit" class="btn-primario">Crear usuario</button>
+                            <a th:href="@{/admin/usuarios}" class="btn-secundario">Cancelar</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/scripts.js}"></script>
+    <script>
+        function mostrarCampos() {
+            const rol = document.getElementById('selectRol').value;
+            ['alumno','profesor','empresa','admin'].forEach(r => {
+                const el = document.getElementById('campos-' + r);
+                if (el) el.classList.remove('visible');
+            });
+            if (rol) {
+                const target = document.getElementById('campos-' + rol);
+                if (target) target.classList.add('visible');
+            }
+        }
+    </script>
+</body>
+</html>

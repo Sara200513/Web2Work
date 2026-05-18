@@ -37,6 +37,11 @@ public class MensajeService {
         return mensajeRepository.findByToUserIdAndLeidoFalse(userId);
     }
 
+    // Conversaciones agrupadas: último mensaje de cada hilo
+    public List<Mensaje> findConversacionesByUserId(Long userId) {
+        return mensajeRepository.findConversacionesByUserId(userId);
+    }
+
     public Mensaje save(Mensaje mensaje) {
         return mensajeRepository.save(mensaje);
     }

@@ -632,3 +632,18 @@ tbody td {
     color: #880E4F;
     border: 1px solid #880E4F;
 }
+
+.conv-asunto {
+    display: block;
+    font-size: 13px;
+    color: var(--navy);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.conv-fecha {
+    display: block;
+    font-size: 11px;
+    color: var(--texto-secundario);
+    margin-top: 4px;
+}

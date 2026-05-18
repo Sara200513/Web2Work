@@ -12,16 +12,15 @@
         <div class="sidebar-logo">
             <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
         </div>
-        <nav class="sidebar-nav">
-            <ul>
-                <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
-                <li class="activo"><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
-                <li><a th:href="@{/admin/roles}">Roles</a></li>
-                <li><a th:href="@{/admin/config}">Config. sistema</a></li>
-                <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
-                <li><a th:href="@{/admin/informes}">Informes</a></li>
-            </ul>
-        </nav>
+        <nav class="sidebar-nav"><ul>
+            <li><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+            <li class="activo"><a th:href="@{/admin/usuarios}">Gestión usuarios</a></li>
+            <li><a th:href="@{/admin/roles}">Roles</a></li>
+            <li><a th:href="@{/mensajes}">Mensajería</a></li>
+            <li><a th:href="@{/admin/config}">Config. sistema</a></li>
+            <li><a th:href="@{/notificaciones}">Notificaciones</a></li>
+            <li><a th:href="@{/admin/informes}">Informes</a></li>
+        </ul></nav>
         <div class="sidebar-footer">
             <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
         </div>
@@ -34,8 +33,13 @@
         </div>
 
         <div class="contenido-inner">
-            <div th:if="${mensajeExito}" class="alerta alerta-exito">
-                <span th:text="${mensajeExito}"></span>
+
+            <!-- Mensajes de éxito -->
+            <div th:if="${param.nuevoUsuario}" class="alerta alerta-exito">
+                ✅ Usuario creado correctamente.
+            </div>
+            <div th:if="${param.editado}" class="alerta alerta-exito">
+                ✅ Usuario actualizado correctamente.
             </div>
 
             <div class="tabla-contenedor">
@@ -51,7 +55,8 @@
                         <option value="empresa">Empresa</option>
                         <option value="admin">Administrador</option>
                     </select>
-                    <a th:href="@{/registro}" class="btn-primario">+ Nuevo usuario</a>
+                    <!-- ← Apunta al nuevo endpoint del admin -->
+                    <a th:href="@{/admin/usuarios/nuevo}" class="btn-primario">+ Nuevo usuario</a>
                 </div>
                 <table id="tablaUsuarios">
                     <thead>
@@ -80,8 +85,8 @@
                                    class="btn-teal btn-pequeño">Editar</a>
                                 <a th:href="@{/admin/usuarios/eliminar/{id}(id=${usuario.id})}"
                                    class="btn-secundario btn-pequeño"
-                                   onclick="return confirm('¿Desactivar este usuario?')">
-                                    Desactivar
+                                   onclick="return confirm('¿Eliminar este usuario?')">
+                                    Eliminar
                                 </a>
                             </td>
                         </tr>

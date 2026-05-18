@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web2Work - Mensajería</title>
+    <title>Web2Work - Mensajeria</title>
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/mensajeria.css}">
@@ -13,7 +13,7 @@
         <div class="sidebar-logo">
             <img src="/imagenes/Imagen1.jpeg" alt="Web2Work">
         </div>
-        <nav class="sidebar-nav">
+		<nav class="sidebar-nav">
             <ul>
                 <li><a th:href="@{/profesores/dashboard}">Dashboard</a></li>
                 <li><a th:href="@{/convenios}">Convenios FE</a></li>
@@ -25,13 +25,13 @@
             </ul>
         </nav>
         <div class="sidebar-footer">
-            <a th:href="@{/logout}" class="btn-logout">Cerrar sesión</a>
+            <a th:href="@{/logout}" class="btn-logout">Cerrar sesion</a>
         </div>
     </div>
 
     <div class="contenido">
         <div class="cabecera">
-            <h1>Mensajería</h1>
+            <h1>Mensajeria</h1>
             <div class="usuario-info"><span>Profesor</span></div>
         </div>
 
@@ -48,22 +48,24 @@
                             th:classappend="${!mensaje.leido} ? ' no-leido'">
                             <a th:href="@{/mensajes/conversacion/{cid}(cid=${mensaje.conversacionId})}">
                                 <span class="conv-nombre"
-                                      th:text="${mensaje.fromUser.nombre + ' ' + mensaje.fromUser.apellidos}">
+                                      th:text="${mensaje.fromUser.id == usuarioActualId}
+                                               ? 'Tu a ' + ${mensaje.toUser.nombre} + ' ' + ${mensaje.toUser.apellidos}
+                                               : ${mensaje.fromUser.nombre} + ' ' + ${mensaje.fromUser.apellidos}">
                                     Usuario
                                 </span>
-                                <span class="conv-preview" th:text="${mensaje.cuerpo}">
-                                    Mensaje...
-                                </span>
+                                <span class="conv-asunto" th:text="${mensaje.asunto}">Asunto</span>
+                                <span class="conv-preview" th:text="${mensaje.cuerpo}">Preview...</span>
+                                <span class="conv-fecha" th:text="${mensaje.createdAt}">Fecha</span>
                             </a>
                         </li>
                         <li th:if="${#lists.isEmpty(mensajes)}" class="sin-datos">
-                            No hay mensajes.
+                            No hay conversaciones todavia.
                         </li>
                     </ul>
                 </div>
                 <div class="mensaje-panel">
                     <div class="mensaje-vacio">
-                        <p>Selecciona una conversación para ver los mensajes</p>
+                        <p>Selecciona una conversacion para ver los mensajes</p>
                     </div>
                 </div>
             </div>

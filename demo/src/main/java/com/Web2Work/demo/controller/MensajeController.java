@@ -22,27 +22,18 @@ public class MensajeController {
     @Autowired private UsuarioService      usuarioService;
     @Autowired private NotificacionService notificacionService;
 
-    // ── Bandeja ──────────────────────────────────────────────────────────────
     @GetMapping
     public String bandeja(Model model, Authentication auth) {
         if (auth != null) {
             usuarioService.findByEmail(auth.getName()).ifPresentOrElse(u -> {
-                var recibidos = mensajeService.findByToUserId(u.getId());
-                var enviados  = mensajeService.findByFromUserId(u.getId());
-
-                // Auto-corregir mensajes sin conversacionId (mensajes anteriores)
-                recibidos.forEach(m -> asegurarConversacionId(m));
-                enviados.forEach(m  -> asegurarConversacionId(m));
-
-                model.addAttribute("mensajes", recibidos);
-                model.addAttribute("enviados",  enviados);
-            }, () -> {
-                model.addAttribute("mensajes", List.of());
-                model.addAttribute("enviados",  List.of());
-            });
+                // Conversaciones agrupadas por último mensaje
+                List<Mensaje> conversaciones =
+                    mensajeService.findConversacionesByUserId(u.getId());
+                model.addAttribute("mensajes", conversaciones);
+                model.addAttribute("usuarioActualId", u.getId());
+            }, () -> model.addAttribute("mensajes", List.of()));
         } else {
             model.addAttribute("mensajes", List.of());
-            model.addAttribute("enviados",  List.of());
         }
         return vistaSegunRol(auth,
                 "mensajes/bandeja",
@@ -51,7 +42,6 @@ public class MensajeController {
                 "mensajes/bandeja-admin");
     }
 
-    // ── Nuevo (GET) ───────────────────────────────────────────────────────────
     @GetMapping("/nuevo")
     public String nuevoForm(Model model, Authentication auth) {
         model.addAttribute("mensaje", new Mensaje());
@@ -71,7 +61,6 @@ public class MensajeController {
                 "mensajes/nuevo-admin");
     }
 
-    // ── Nuevo (POST) ──────────────────────────────────────────────────────────
     @PostMapping("/nuevo")
     public String nuevo(@RequestParam Long toUserId,
                         @RequestParam String asunto,
@@ -102,27 +91,27 @@ public class MensajeController {
         return "redirect:/mensajes";
     }
 
-    // ── Ver conversación ──────────────────────────────────────────────────────
     @GetMapping("/conversacion/{conversacionId}")
     public String verConversacion(@PathVariable String conversacionId,
                                    Model model, Authentication auth) {
         var mensajes = mensajeService.findByConversacionId(conversacionId);
 
         if (auth != null) {
-            usuarioService.findByEmail(auth.getName()).ifPresent(u ->
+            usuarioService.findByEmail(auth.getName()).ifPresent(u -> {
                 mensajes.forEach(m -> {
                     if (m.getToUser().getId().equals(u.getId()) && !m.getLeido()) {
                         m.setLeido(true);
                         mensajeService.save(m);
                     }
-                })
-            );
+                });
+                model.addAttribute("usuarioActualId", u.getId());
+            });
         }
 
-        model.addAttribute("mensajes",       mensajes);
+        model.addAttribute("mensajes", mensajes);
         model.addAttribute("conversacionId", conversacionId);
         model.addAttribute("asunto",
-            mensajes.isEmpty() ? "Conversación" : mensajes.get(0).getAsunto());
+            mensajes.isEmpty() ? "Conversacion" : mensajes.get(0).getAsunto());
 
         return vistaSegunRol(auth,
                 "mensajes/conversacion",
@@ -131,7 +120,6 @@ public class MensajeController {
                 "mensajes/conversacion-admin");
     }
 
-    // ── Responder ─────────────────────────────────────────────────────────────
     @PostMapping("/responder")
     public String responder(@RequestParam String conversacionId,
                             @RequestParam String cuerpo,
@@ -143,7 +131,7 @@ public class MensajeController {
 
         usuarioService.findByEmail(auth.getName()).ifPresent(fromUser -> {
             Mensaje original = mensajes.get(0);
-            Usuario toUser   = original.getFromUser().getId().equals(fromUser.getId())
+            Usuario toUser = original.getFromUser().getId().equals(fromUser.getId())
                     ? original.getToUser()
                     : original.getFromUser();
 
@@ -166,15 +154,6 @@ public class MensajeController {
         return "redirect:/mensajes/conversacion/" + conversacionId;
     }
 
-    // ── Asegurar que el mensaje tiene conversacionId ───────────────────────────
-    private void asegurarConversacionId(Mensaje m) {
-        if (m.getConversacionId() == null || m.getConversacionId().isBlank()) {
-            m.setConversacionId(UUID.randomUUID().toString());
-            mensajeService.save(m);
-        }
-    }
-
-    // ── Vista según rol ────────────────────────────────────────────────────────
     private String vistaSegunRol(Authentication auth,
                                   String alumno, String profesor,
                                   String empresa, String admin) {
